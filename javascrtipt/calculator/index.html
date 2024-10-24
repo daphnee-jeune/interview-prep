@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Calculator practice</title>
+    <link rel="stylesheet" href="style.css" />
+    <script src="index.js"></script>
+  </head>
+  <body>
+    <div>
+      <input type="text" id="display" class="display" />
+      <section>
+        <button class="button clear" onClick="clearDisplay()">Clear</button>
+        <button class="button operator" onClick="appendOperator('/')">/</button>
+        <button class="button operator" onClick="appendOperator('*')">*</button>
+        <button class="button operator" onClick="appendOperator('-')">-</button>
+      </section>
+      <section>
+        <button class="button" onClick="appendNumber(7)">7</button>
+        <button class="button" onClick="appendNumber(8)">8</button>
+        <button class="button" onClick="appendNumber(9)">9</button>
+        <button class="button operator" onClick="appendOperator('+')">+</button>
+      </section>
+      <section>
+        <button class="button" onClick="appendNumber(4)">4</button>
+        <button class="button" onClick="appendNumber(5)">5</button>
+        <button class="button" onClick="appendNumber(6)">6</button>
+        <button class="button operator" onClick="computeResult()">=</button>
+      </section>
+      <section>
+        <button class="button" onClick="appendNumber(1)">1</button>
+        <button class="button" onClick="appendNumber(2)">2</button>
+        <button class="button" onClick="appendNumber(3)">3</button>
+        <button class="button operator" onClick="appendDot('.')">.</button>
+      </section>
+      <section>
+        <button class="button">0</button>
+      </section>
+    </div>
+  </body>
+</html>

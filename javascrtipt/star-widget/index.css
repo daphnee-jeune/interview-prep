@@ -1,0 +1,17 @@
+.star-widget {
+  display: flex;
+  flex-direction: row-reverse;
+  justify-content: flex-end;
+}
+.star {
+  font-size: 2rem;
+  color: #ccc;
+  cursor: pointer;
+  padding: 0 5px;
+}
+.star.selected {
+  color: #ffc107;
+}
+.star:hover ~ .star {
+  color: gold;
+}
