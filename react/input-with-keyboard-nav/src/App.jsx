@@ -2,9 +2,11 @@ import React, { useState } from "react";
 
 const App = () => {
   const [query, setQuery] = useState(""); // Stores the user input
-  const [results, setResults] = useState([]); // Stores the API search results
+  const [results, setResults] = useState([]); // Stores the API search results as an array
+  const [isLoading, setIsLoading] = useState(false); // Boolean to track loading state
   const [highlightIndex, setHighlightIndex] = useState(-1); // Track which result is highlighted
   const [showDropdown, setShowDropdown] = useState(false); // Controls visibility of dropdown
+  const [error, setError] = useState(null); // Stores error message
 
   // Function to fetch data from the API
   const fetchProducts = async (query) => {
@@ -12,19 +14,31 @@ const App = () => {
       `https://dummyjson.com/products/search?q=${query}`
     );
     const data = await response.json();
-    setResults(data.products || []);
+    return data.products || []; // Return the products array
   };
 
   // Handle input change (Autocomplete logic)
-  const handleChange = (e) => {
-    const value = e.target.value;
-    setQuery(value);
+  const handleChange = async (e) => {
+    const userInput = e.target.value;
+    setQuery(userInput);
     setShowDropdown(true);
 
-    if (value.trim().length > 0) {
-      fetchProducts(value);
-    } else {
-      setResults([]);
+    if (userInput.trim().length === 0) {
+      setResults([]); // Clear results if input is empty
+      return;
+    }
+
+    try {
+      setIsLoading(true);
+      setError(null); // Clear previous errors
+
+      const awaitedResults = await fetchProducts(userInput);
+      setResults(awaitedResults); // Update results with the fetched data
+
+      setIsLoading(false);
+    } catch (err) {
+      setError("Error fetching data.");
+      setIsLoading(false);
     }
   };
 
@@ -53,7 +67,7 @@ const App = () => {
 
   // Handle item selection (triggered by clicking or pressing Enter)
   const selectItem = (item) => {
-    setQuery(item.title); // Set the query to the selected item
+    setQuery(item.title); // Set the query to the selected item's title
     setShowDropdown(false); // Hide the dropdown
   };
 
@@ -88,7 +102,9 @@ const App = () => {
         onKeyDown={handleKeyDown}
         placeholder="Search for a product..."
       />
-      {renderDropdown()}
+      {isLoading && <div>Loading...</div>}
+      {error && <div>{error}</div>}
+      <div>{renderDropdown()}</div>
     </div>
   );
 };
