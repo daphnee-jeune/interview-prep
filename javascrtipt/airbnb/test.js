@@ -1,77 +1,68 @@
-class MyPromise {
-  constructor(executor) {
-    this.state = "pending";
-    this.value = undefined;
-    this.handlers = [];
-    this.catchers = [];
-
-    const resolve = this.resolve.bind(this);
-    const reject = this.reject.bind(this);
-
-    try {
-      executor(resolve, reject);
-    } catch (err) {
-      reject(err);
+class FileSystem {
+  constructor() {
+    this.root = {};
+  }
+  create(path) {
+    const segments = this._getSegments(path);
+    let current = this.root;
+    for (let i = 0; i < segments.length; i++) {
+      const segment = segments[i];
+      if (!current[segment]) {
+        current[segment] = i === segments.length - 1 ? null : {};
+      } else if (
+        i === segments.length - 1 ||
+        typeof current[segment] === "object"
+      ) {
+        throw new Error(`${segment} already exists as a folder`);
+      }
+      current = current[segment];
     }
   }
-  resolve(value) {
-    if (this.state === "pending") return;
-    this.state = "fulfilled";
-    this.value = value;
-    this.handlers.forEach((handler) => handler(value));
-  }
-  reject(error) {
-    if (this.state === "pending") return;
-    this.state = "rejected";
-    this.value = error;
-    this.catchers.forEach((catcher) => catcher(error));
-  }
-  then(onSuccess) {
-    return new MyPromise((resolve, reject) => {
-      const handle = () => {
-        if (this.state === "fulfilled") {
-          const result = onSuccess(this.value);
-          resolve(result);
-        }
-      };
-      if (this.state === "pending") {
-        this.handlers.push(handle);
-      } else if (this.state === "fulfilled") {
-        handle();
+  get(path) {
+    const segments = this._getSegments(path);
+    let current = this.root;
+    for (const segment of segments) {
+      if (!current[segment]) {
+        throw new Error(`${path} not found`);
       }
-    });
+      current = current[segment];
+    }
+    return current;
   }
-  catch(onError) {
-    return new MyPromise((resolve, reject) => {
-      const handle = () => {
-        if (this.state === "rejected") {
-          const result = onError(this.value);
-          reject(result);
-        }
-      };
-      if (this.state === "pending") {
-        this.catchers.forEach((catcher) => catcher(handle));
-      } else if (this.state === "rejected") {
-        handle();
+  set(path, value) {
+    const segments = this._getSegments(path);
+    let current = this.root;
+    for (let i = 0; i < segments.length - 1; i++) {
+      const segment = segments[i];
+      if (!current[segment] || typeof current[segment] !== "object") {
+        throw new Error(`Invalid path: ${segments.slice(0, i + 1).join("/")}`);
       }
-    });
+      current = current[segment];
+    }
+    const file = segments.length - 1;
+    if (typeof current[file] === "object") {
+      throw new Error(`${file} is already a folder`);
+    }
+    current[file] = value;
   }
-  finally(onFinally) {
-    return new MyPromise((resolve, reject) => {
-      const handle = () => {
-        onFinally();
-        if (this.state === "fulfilled") {
-          resolve(this.value);
-        } else if (this.state === "rejected") {
-          reject(this.value);
-        }
-      };
-      if (this.state === "pending") {
-        this.handlers.push(handle);
-        this.catchers.push(handle);
-      } else {
-        handle();
+  delete(path) {
+    const segments = this._getSegments(path);
+    let current = this.root;
+    for (let i = 0; i < segments.length - 1; i++) {
+      const segment = segments[i];
+      if (!current[segment]) {
+        throw new Error(`Invalid path: ${segments.slice(0, i + 1).join("/")}`);
       }
-    });
+      current = current[segment];
+    }
+    const fileOrFolder = segments[segments.length - 1];
+
+    if (!current[fileOrFolder]) {
+      throw new Error(`Not found: ${path}`);
+    }
+    delete current[fileOrFolder];
+  }
+  _getSegments(path) {
+    return path.split("/").filter(Boolean);
   }
 }
