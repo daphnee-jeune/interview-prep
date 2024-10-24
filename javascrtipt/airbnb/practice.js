@@ -35,36 +35,37 @@ function Thing() {
     }).value;
   };
 }
-// making your mark and owning your impact.
 
-// Build a clas that acts like a promise
+// Build a class that acts like a promise
 class MyPromise {
   constructor(executor) {
     this.state = "pending"; // initial state
     this.value = undefined; // fulfilled or rejected value
     this.handlers = []; // queue for .then() handlers
     this.catchers = []; // queue for .catch handlers
+    this.isAborted = false; // whether the promise has been aborted
 
     // Bind resolve and reject methods to ensure correct 'this'
     const resolve = this.resolve.bind(this);
     const reject = this.reject.bind(this);
+    const abort = this.abort.bind(this);
 
     try {
-      executor(resolve, reject); // Execute the passed fn immediately, passing resolve and reject
+      executor(resolve, reject, abort); // Execute the passed fn immediately, passing resolve and reject
     } catch (error) {
       reject(error); // If an error occurs during the executor, reject the promise
     }
   }
   // Method to resolve the promise
   resolve(value) {
-    if (this.state !== "pending") return; // Prevent state transition after it's settled
+    if (this.state !== "pending" || this.isAborted) return; // Prevent state transition after it's settled
     this.state = "fulfilled";
     this.value = value;
     this.handlers.forEach((handler) => handler(value)); // Call all registered .then() handlers
   }
   // Method to reject the promise
   reject(error) {
-    if (this.state !== "pending") return; // Prevent state transition after it's settled
+    if (this.state !== "pending" || this.isAborted) return; // Prevent state transition after it's settled
     this.state = "rejected";
     this.value = error;
     this.catchers.forEach((catcher) => catcher(error)); // Call all registered .catch() handlers
@@ -74,15 +75,15 @@ class MyPromise {
     return new MyPromise((resolve, reject) => {
       // Push the handler int the handlers array
       const handle = () => {
-        if (this.state === "fulfilled") {
+        if (this.state === "fulfilled" && !this.isAborted) {
           const result = onSuccess(this.value); // If fulfilled, call the success handler and chain the next promise
           resolve(result);
         }
       };
 
-      if (this.state === "pending") {
+      if (this.state === "pending" && !this.isAborted) {
         this.handlers.push(handle); // If still pending, store the handler
-      } else if (this.state === "fulfilled") {
+      } else if (this.state === "fulfilled" && !this.isAborted) {
         handle(); // If already fulfilled, call the handler immediately
       }
     });
@@ -91,13 +92,15 @@ class MyPromise {
     return new MyPromise((resolve, reject) => {
       const handle = () => {
         // if rejected, call the error handler and chain the next promise
-        const result = onError(this.value);
-        reject(result);
+        if (this.state === "rejected" && !this.isAborted) {
+          const result = onError(this.value);
+          reject(result);
+        }
       };
 
-      if (this.state === "pending") {
+      if (this.state === "pending" && !this.isAborted) {
         this.catchers.push(handle); // If still pending, store the catcher
-      } else if (this.state === "rejected") {
+      } else if (this.state === "rejected" && !this.isAborted) {
         handle(); // If already rejected, call the catcher immediately
       }
     });
@@ -105,22 +108,33 @@ class MyPromise {
   finally(onFinally) {
     return new MyPromise((resolve, reject) => {
       const handle = () => {
-        onFinally(); // Execute the final logic
-        if (this.state === "fulfilled") {
-          resolve(this.value);
-        } else if (this.state === "rejected") {
-          reject(this.value);
+        if (!this.isAborted) {
+          onFinally(); // Execute the final logic
+          if (this.state === "fulfilled") {
+            resolve(this.value);
+          } else if (this.state === "rejected") {
+            reject(this.value);
+          }
         }
       };
 
-      if (this.state === "pending") {
+      if (this.state === "pending" && !this.isAborted) {
         // Store the final logic
         this.handlers.push(handle);
         this.catchers.push(handle);
-      } else {
-        handle(); // call the final logic immediately if alreaedy settled
+      } else if (!this.isAborted) {
+        handle(); // Call the final logic immediately if already settled
       }
     });
+  }
+  // stop the promise from resolving or rejecting
+  abort() {
+    if (this.state === "pending") {
+      this.isAborted = true;
+      this.handlers = [];
+      this.catchers = [];
+      console.log("Promise aborted");
+    }
   }
 }
 /* ---------------------------------------------------------------------------------------------- */
@@ -357,8 +371,8 @@ class FileSystem {
     // Traverse to the second-to-last segment (parent directory)
     for (let i = 0; i < segments.length - 1; i++) {
       const segment = segments[i];
-      if (!current[segment] || typeof current[segment] !== 'object') {
-        throw new Error(`Invalid path: ${segments.slice(0, i + 1).join('/')}`);
+      if (!current[segment] || typeof current[segment] !== "object") {
+        throw new Error(`Invalid path: ${segments.slice(0, i + 1).join("/")}`);
       }
       current = current[segment]; // Move deeper into the file system
     }
