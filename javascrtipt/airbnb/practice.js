@@ -349,6 +349,30 @@ class FileSystem {
     }
     current[file] = value; // Set the value of the file
   }
+  // Delete a file or folder at the specified path
+  delete(path) {
+    const segments = this._getPathSegments(path);
+    let current = this.root;
+
+    // Traverse to the second-to-last segment (parent directory)
+    for (let i = 0; i < segments.length - 1; i++) {
+      const segment = segments[i];
+      if (!current[segment] || typeof current[segment] !== 'object') {
+        throw new Error(`Invalid path: ${segments.slice(0, i + 1).join('/')}`);
+      }
+      current = current[segment]; // Move deeper into the file system
+    }
+
+    const fileOrFolder = segments[segments.length - 1];
+
+    // Check if the file or folder exists
+    if (!current[fileOrFolder]) {
+      throw new Error(`Path not found: ${path}`);
+    }
+
+    // Delete the file or folder
+    delete current[fileOrFolder];
+  }
   // Private helper method to split the path into segments and remove leading/trailing slashes
   _getPathSegments(path) {
     return path.split("/").filter(Boolean); // Split path by '/' and remove empty segments
