@@ -1,4 +1,5 @@
 import React, { useState } from "react";
+import "./App.css";
 
 const App = () => {
   const [query, setQuery] = useState(""); // Stores the user input
@@ -14,7 +15,7 @@ const App = () => {
       `https://dummyjson.com/products/search?q=${query}`
     );
     const data = await response.json();
-    return data.products || []; // Return the products array
+    return data.products ?? []; // Return the products array
   };
 
   // Handle input change (Autocomplete logic)
@@ -73,9 +74,9 @@ const App = () => {
 
   // Render the autocomplete dropdown list
   const renderDropdown = () => {
-    if (!showDropdown || results.length === 0) {
-      return null;
-    }
+    // if (!showDropdown || results.length === 0) {
+    //   return null;
+    // }
 
     return (
       <ul className="autocomplete-dropdown">

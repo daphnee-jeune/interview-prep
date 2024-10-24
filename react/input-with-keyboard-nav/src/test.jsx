@@ -1,44 +1,53 @@
 import React, { useState } from "react";
 
-const url = "https://dummyjson.com/products";
+const api_endpoint = "https://dummyjson.com/products/";
 
 const test = () => {
   const [query, setQuery] = useState("");
   const [results, setResults] = useState([]);
+  const [isLoading, setIsLoading] = useState(false);
+  const [error, setError] = useState(null);
   const [showDropdown, setShowDropdown] = useState(false);
-  const [highlightIndex, setHighlightIndex] = useState(-1);
+  const [currentIdx, setCurrentIdx] = useState(-1);
 
   const fetchResults = async () => {
-    const response = await fetch(`${url}/search?q=${query}`);
+    const response = await fetch(`${api_endpoint}/search?q=${query}`);
     const data = await response.json();
-    setResults(data.products ?? []);
+    return data.products ?? []; // Return the products array
   };
 
-  const handleChange = (e) => {
+  const handleInputChange = async (e) => {
     const userInput = e.target.value;
     setQuery(userInput);
     setShowDropdown(true);
-    if (userInput.trim > 0) {
-      fetchResults(userInput);
-    } else {
-      setResults([]);
+
+    try {
+      setIsLoading(true);
+      setError(null);
+      const awaitedResults = await fetchResults(userInput);
+      setResults(awaitedResults);
+      setIsLoading(false);
+    } catch (err) {
+      setError(err);
+      setIsLoading(false);
     }
   };
-  const handleKeydown = (e) => {
-    if (e.key === "ArrowDown") {
-      setHighlightIndex((prevIndex) =>
-        prevIndex < results.length - 1 ? prevIndex + 1 : prevIndex
-      );
-    } else if (e.key === "ArrowUp") {
-      setHighlightIndex((prevIndex) => {
-        prevIndex > 0 ? prevIndex - 1 : prevIndex;
+
+  const handleKeyDown = (e) => {
+    if ((e.key = "ArrowDown")) {
+      setCurrentIdx((prevIdx) => {
+        prevIdx < results.length - 1 ? prevIdx + 1 : prevIdx;
       });
-    } else if (e.key === "Enter") {
-      if (highlightIndex >= 0 && highlightIndex < results.length) {
-        selectItem(results[highlightIndex]);
-      }
+    } else if (e.key === "ArrowUp") {
+      setCurrentIdx((prevIdx) => {
+        prevIdx > 0 ? prevIdx - 1 : prevIdx;
+      });
     } else if (e.key === "Escape") {
       setShowDropdown(false);
+    } else if (e.key === "Enter") {
+      if (currentIdx >= 0 && currentIdx < results.length) {
+        selectItem(results[currentIdx]);
+      }
     }
   };
   const selectItem = (item) => {
@@ -46,18 +55,19 @@ const test = () => {
     setShowDropdown(false);
   };
   const renderDropdown = () => {
-    if (!results.length || !showDropdown) return null;
     return (
       <ul>
         {results.map((result, i) => {
-          <li
-            key={result.id}
-            className={highlightIndex === i ? "highlight" : ""}
-            onMouseEnter={() => setHighlightIndex(i)}
-            onClick={() => selectItem(result)}
-          >
-            {result.title}
-          </li>;
+          return (
+            <li
+              key={result.id}
+              onClick={() => selectItem(result)}
+              onMouseEnter={() => setCurrentIdx(i)}
+              className={currentIdx === i ? "highlight" : ""}
+            >
+              {result.title}
+            </li>
+          );
         })}
       </ul>
     );
@@ -66,11 +76,15 @@ const test = () => {
     <div className="autocomplete">
       <input
         type="text"
-        value={query}
-        onChange={handleChange}
-        onKeyDown={handleKeydown}
+        placeholder="Search..."
+        onChange={handleInputChange}
+        onKeyDown={handleKeyDown}
       />
-      {renderDropdown()}
+      <div>
+        {isLoading && <div>Loading...</div>}
+        {error && <div>{error}</div>}
+        {renderDropdown()}
+      </div>
     </div>
   );
 };
