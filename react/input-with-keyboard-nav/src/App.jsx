@@ -74,9 +74,9 @@ const App = () => {
 
   // Render the autocomplete dropdown list
   const renderDropdown = () => {
-    // if (!showDropdown || results.length === 0) {
-    //   return null;
-    // }
+    if (!showDropdown || results.length === 0) {
+      return null;
+    }
 
     return (
       <ul className="autocomplete-dropdown">
