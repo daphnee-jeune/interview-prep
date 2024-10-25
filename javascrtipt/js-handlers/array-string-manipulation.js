@@ -207,6 +207,20 @@ const mostFrequent = (arr) => {
 };
 // console.log(mostFrequent([1, 2, 3, 1, 2, 1])); // 1
 
+// Debounce
+function debounce(func, delay) {
+  let timeoutId;
+  return function (...args) {
+    const context = this;
+    // Clear the timeout if a new event occurs within the delay period
+    clearTimeout(timeoutId);
+    // Set a new timeout to call the function after the delay period
+    timeoutId = setTimeout(() => {
+      func.apply(context, args);
+    }, delay);
+  };
+}
+
 /* ------------------------------- STRINGS ------------------------------------- */
 
 // Longest Substring Without Repeating Characters
