@@ -1,17 +1,14 @@
-const starRatingWidgets = document.querySelectorAll("star-rating-widget");
+const starWidgets = document.querySelectorAll(".star-rating-widget");
 
-starRatingWidgets.forEach((widget, idx) => {
-  const generateStars = (starNum) => {
+starWidgets.forEach((widget, idx) => {
+  const generateStars = (num) => {
     const fragment = document.createDocumentFragment();
-    for (let i = 0; i < starNum; i++) {
+    for (let i = 0; i < num; i++) {
       const star = document.createElement("span");
       star.textContent = "★";
-      star.classList.add("star");
       star.dataset.value = i;
 
       star.addEventListener("click", handleStarClick);
-      star.addEventListener("mouseenter", handleStarHover);
-      star.addEventListener("mouseout", handleMouseout);
 
       fragment.append(star);
     }
@@ -24,31 +21,15 @@ starRatingWidgets.forEach((widget, idx) => {
   widget.append(stars);
   widget.append(input);
 
-  handleStarClick = (e) => {
-    const value = Number(e.target.dataset.value);
+  function handleStarClick(e) {
+    const value = e.target.dataset.value;
     const stars = widget.querySelectorAll(".star");
-    input.value = value + 1;
-    stars.forEach((star, i) => {
-      if (value <= i) {
-        star.classList.add("selected");
+    stars.forEachEach((star, i) => {
+      if (i < value) {
+        star.classlist.add("selected");
       } else {
-        star.classList.remove("selected");
+        star.classlist.remove("selected");
       }
     });
-  };
-  handleStarHover = (e) => {
-    const value = Number(e.target.dataset.value);
-    const stars = widget.querySelectorAll(".star");
-    stars.forEach((star, i) => {
-      if (value <= i) {
-        star.classList.add("hover");
-      } else {
-        star.classList.remove("hover");
-      }
-    });
-  };
-  handleMouseout = () => {
-    const stars = widget.querySelectorAll(".star");
-    stars.forEach((star) => star.classList.remove("hover"));
-  };
+  }
 });

@@ -9,31 +9,17 @@
 // Find all anagrams in a string
 // BFS and DFS
 
-// Build a simple react component
-// Sys design of a chat app
-// Simple card game
-// Given a star widget embedded in a form write the code to select the stars and submit the correct value through a normal form action. Make reusable for multiple star widgets.
-// Given an input and an endpoint which returns a JSON list, as a result, extend it to autocomplete on change, handle key navigation through the results
-// Build a class that has getter and settings with on change events
-// Dealing poker cards, input validation, Water pour
 // Given: var thing = new Thing(); How would you implement the following functionality: thing.set('x', val); thing.set('y', val2); console.log(thing.get('x')); // val console.log(thing.get('y')); // val2
-function Thing() {
-  let list = [];
-
-  this.set = function (key, value) {
-    let collection = {
-      key: key,
-      value: value,
-    };
-
-    list.push(collection);
-  };
-
-  this.get = function (key) {
-    return list.find(function (coll) {
-      return coll.key === key;
-    }).value;
-  };
+class thing {
+  constructor() {
+    this.properties = {};
+  }
+  set(key, value) {
+    this.properties[key] = value;
+  }
+  get(key) {
+    return this.properties[key];
+  }
 }
 
 // Build a class that acts like a promise

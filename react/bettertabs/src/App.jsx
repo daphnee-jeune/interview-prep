@@ -4,7 +4,7 @@ import Tab from "./Tab";
 function App() {
   return (
     <Tabs>
-      <Tab label="Tab 1">
+      <Tab label="Test">
         <h1>Tab 1</h1>
         <p>Content for Tab 1</p>
       </Tab>

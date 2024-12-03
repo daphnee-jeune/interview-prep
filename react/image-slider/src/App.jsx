@@ -30,10 +30,10 @@ function App() {
   const handleNextClick = () => {
     if (!wrapperRef.current) return;
     let nextIdx = currentIdx + 1;
-    if (nextIdx >= products.length) return nextIdx = 0; // if currIdx exceeds the length of products, loop back to the first item
+    if (nextIdx >= products.length) return (nextIdx = 0); // if currIdx exceeds the length of products, loop back to the first item
 
     setCurrentIdx(nextIdx); // move to the next product
- 
+
     // smooth scrolling
     wrapperRef.current.scrollTo({
       left: nextIdx * 400, // assuming each item is 400px wide
