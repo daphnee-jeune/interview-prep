@@ -133,20 +133,55 @@ const binaryTreeLevelOrderRecursive = (root) => {
   return result;
 };
 
-const test = root => {
-  const result = []
+// Leetcode problem 105: Given two integer arrays preorder and inorder where preorder is the preorder traversal of a binary tree and inorder is the inorder traversal of the same tree, construct and return the binary tree.
+const buildTreeIterative = (preorder, inorder) => {
+  if (!preorder.length || !inorder.length) return null; // handle edgecase
+  const root = { val: preorder[0], left: null, right: null }; // tree root
+  const stack = [root];
+  let inorderIndex = 0; // pointer for inorder traversal
 
-  const traverse = (node, level) => {
-    if(!node) return
+  for (let i = 0; i < preorder.length; i++) {
+    const node = { val: preorder[i], left: null, right: null }; // new node
+    let parent = stack[stack.length - 1]; // check the top of the stack
 
-    if(result.length === level){
-      result.push([])
+    if (parent.val !== inorder[inorderIndex]) {
+      // if the current node's value doesn't match the inorder value, it's the left child
+      parent.left = node;
+    } else {
+      // If it matches, backtrack until we find the parent to attach as the right child
+      while (
+        stack.length &&
+        stack[stack.length - 1].val === inorder[inorderIndex]
+      ) {
+        parent = stack.pop();
+        inorderIndex++;
+      }
+      parent.right = node;
     }
-    result[level].push(node.val)
-
-    traverse(node.left, level + 1)
-    traverse(node.right, level + 1)
+    stack.push(node); // push the current node onto the stack
   }
-  traverse(root, 0)
-  return result
-}
+  return root; // return the constructed tree
+};
+
+const buildTreeRecursive = (preorder, inorder) => {
+  if (!preorder.length || !inorder.length) return null; // base case
+
+  const rootVal = preorder[0]; // the first value in preorder is the root
+  const root = { val: rootVal, left: null, right: null }; // create the root node
+
+  const rootIndex = inorder.indexOf(rootVal); // find root's index in inorder
+
+  // left subtree uses elements before the root in inorder
+  // and the corresponding elements in preorder
+  root.left = buildTreeRecursive(
+    preorder.slice(1, rootIndex + 1),
+    inorder.slice(0, rootIndex)
+  );
+
+  // right subtree uses elements after the root in inorder and the corresponding elements in preorder
+  root.right = buildTreeRecursive(
+    preorder.slice(rootIndex + 1),
+    inorder.slice(rootIndex + 1)
+  );
+  return root; // return the constructed tree
+};
