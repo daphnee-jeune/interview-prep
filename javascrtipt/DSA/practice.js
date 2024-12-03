@@ -88,7 +88,7 @@ const postOrderTraversal = (root) => {
 };
 
 // Leetcode problem 102: Given the root of a binary tree, return the level order traversal of its nodes' values. (i.e., from left to right, level by level).
-// breadth-first search (queue)
+// breadth-first search (queue) O(n) (each node is processed once)
 const binaryTreeLevelOrderIterative = (root) => {
   if (!root) return []; // handle edge case
 
@@ -111,7 +111,7 @@ const binaryTreeLevelOrderIterative = (root) => {
   }
   return result;
 };
-
+// O(n) (each node is visited once).
 const binaryTreeLevelOrderRecursive = (root) => {
   const result = [];
 
