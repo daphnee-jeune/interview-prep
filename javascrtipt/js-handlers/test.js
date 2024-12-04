@@ -141,3 +141,46 @@ const binarySearch = (arr, target) => {
   return "Not found";
 };
 
+// undo / redo feature
+class UndoRedoManager {
+  constructor() {
+    this.history = []; // stack for undo
+    this.redoStack = []; // stack for redo
+  }
+
+  // add a new action
+  addAction(action) {
+    this.history(action);
+    this.redoStack = []; // clear redo stack after new action
+  }
+
+  // undo the last action
+  undo() {
+    if (!this.history.length) {
+      throw new Error("No actions to undo");
+    }
+    const action = this.history.pop();
+    this.redoStack.push(action);
+    return action;
+  }
+
+  // redo the last undone action
+  redo() {
+    if (!this.redoStack.length) {
+      throw new Error("No actions to redo");
+    }
+    const action = this.redoStack.pop();
+    this.history.push(action);
+    return action;
+  }
+
+  // get current state of the undo stack
+  getHistory() {
+    return [...this.history];
+  }
+
+  // get current state of the redo stack
+  getRedoStack() {
+    return [...this.redoStack];
+  }
+}
