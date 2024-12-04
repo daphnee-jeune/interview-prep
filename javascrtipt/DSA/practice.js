@@ -15,6 +15,22 @@ const twoSums = (nums, target) => {
   throw new Error("No complement found");
 };
 
+// Invert a binary tree
+const invertTree = root => {
+  if (!root) return null; // base edge case
+
+  // swap left and right children of the current node
+  const temp = root.left;
+  root.left = root.right
+  root.right = temp
+
+  // recursively invert left and right subtrees
+  invertTree(root.left)
+  invertTree(root.right)
+
+  return root
+}
+
 // TREES
 //     1
 //    / \
