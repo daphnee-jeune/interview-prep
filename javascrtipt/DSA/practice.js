@@ -1,4 +1,47 @@
 // HASHTABLES
+// Group anagrams: Given an array of strings, group anagrams together
+const groupAnagrams = (strs) => {
+  const map = new Map();
+
+  for (const str of strs) {
+    const sorted = str.split("").sort().join("");
+    if (!map.has(sorted)) {
+      map.set(sorted, []);
+    }
+    map.get(sorted).push(str);
+  }
+  return Array.from(map.values());
+};
+
+// Leetcode: 560
+const topKFrequentIterative = (nums, k) => {
+  const map = new Map();
+
+  for (const num of nums) {
+    map.set(num, (map.get(num) || 0) + 1);
+  }
+  return Array.from(map.entries())
+    .sort((a, b) => b[1] - a[1])
+    .slice(0, k)
+    .map((entry) => entry[0]);
+};
+
+// Subarray Sum Equals K
+const subArraySumIterative = (nums, k) => {
+  let count = 0;
+  let sum = 0;
+  const map = new Map();
+  map.set(0, 1);
+
+  for (const num of nums) {
+    sum += num;
+    if (map.has(sum - k)) {
+      count += map.get(sum - k);
+    }
+    map.set(sum, (map.get(sum) || 0) + 1);
+  }
+  return count;
+};
 
 // Two sum
 // Time and space: O(n) where n is the size of the input array
@@ -16,20 +59,20 @@ const twoSums = (nums, target) => {
 };
 
 // Invert a binary tree
-const invertTree = root => {
+const invertTree = (root) => {
   if (!root) return null; // base edge case
 
   // swap left and right children of the current node
   const temp = root.left;
-  root.left = root.right
-  root.right = temp
+  root.left = root.right;
+  root.right = temp;
 
   // recursively invert left and right subtrees
-  invertTree(root.left)
-  invertTree(root.right)
+  invertTree(root.left);
+  invertTree(root.right);
 
-  return root
-}
+  return root;
+};
 
 // TREES
 //     1
