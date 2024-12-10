@@ -333,33 +333,39 @@ class FigmaDoc {
     this.nextId = 1;
   }
 
-  addLayer(name, type, position = {x: 0, y: 0}, visibility = true){
-    const layer = new FigmaLayer(this.nextId++, name, type, position, visibility)
-    this.layers.push(layer)
-    return layer
+  addLayer(name, type, position = { x: 0, y: 0 }, visibility = true) {
+    const layer = new FigmaLayer(
+      this.nextId++,
+      name,
+      type,
+      position,
+      visibility
+    );
+    this.layers.push(layer);
+    return layer;
   }
 
-  removeLayer(id){
-    const index = this.layers.findIndex(layer => lauer.id === id)
-    if(index !== -1){
-      this.layers.splice(index, 1)
-      return true
+  removeLayer(id) {
+    const index = this.layers.findIndex((layer) => layer.id === id);
+    if (index !== -1) {
+      this.layers.splice(index, 1);
+      return true;
     }
-    return false
+    return false;
   }
 
-  updateLayer(id, props){
-    const layer = this.layers.find(layer => layer.id === id)
-    if(!layer) throw new Error('Layer not found')
-    layer.update(props)
-    return layer
+  updateLayer(id, props) {
+    const layer = this.layers.find((layer) => layer.id === id);
+    if (!layer) throw new Error("Layer not found");
+    layer.update(props);
+    return layer;
   }
 
-  getLayer(id){
-    return this.layers.find(layer => layer.id === id) || null
+  getLayer(id) {
+    return this.layers.find((layer) => layer.id === id) || null;
   }
 
-  getAllLayers(){
-    return this.layers
+  getAllLayers() {
+    return this.layers;
   }
 }
