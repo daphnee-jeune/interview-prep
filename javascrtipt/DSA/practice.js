@@ -258,3 +258,35 @@ const buildTreeRecursive = (preorder, inorder) => {
   );
   return root; // return the constructed tree
 };
+
+// LRU cache
+class LRUCache {
+  constructor(capacity) {
+    this.capacity = capacity;
+    this.cache = {};
+    this.keys = [];
+  }
+
+  get(key) {
+    if (!(key in this.cache)) return -1;
+    // Move the key to the end of the `keys` array to mark it as recently used
+    const index = this.keys.indexOf(key);
+    this.keys.splice(index, 1);
+    this.keys.push(key);
+    return this.cache[key];
+  }
+  put(key, value) {
+    if (key in this.cache) {
+      // If the key exists, update its value and mark it as recently used
+      const index = this.keys.indexOf(key);
+      this.keys.splice(index, 1);
+    } else if (this.keys.length >= this.capacity) {
+      // If the cache is full, remove the least recently used key
+      const lruKey = this.keys.shift(); // remove 1st key (least recently used)
+      delete this.cache[lruKey]; // remove from cache
+    }
+    // Add the key to the end of the `keys` array and update the cache
+    this.keys.push(key);
+    this.cache[key] = value;
+  }
+}
