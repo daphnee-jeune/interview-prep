@@ -259,6 +259,24 @@ const buildTreeRecursive = (preorder, inorder) => {
   return root; // return the constructed tree
 };
 
+// Max Depth of Binary Tree
+// Given the root of a binary tree, return its maximum depth
+const maxDepthIterative = (root) => {
+  if (!root) return;
+  const stack = [{ node: root, depth: 1 }];
+  let maxDepth = 0;
+
+  while (stack.length > 0) {
+    const { node, depth } = stack.pop();
+    if (node) {
+      maxDepth = Math.max(maxDepth, depth);
+      stack.push({ node: node.left, depth: depth + 1 });
+      stack.push({ node: node.right, depth: depth + 1 });
+    }
+  }
+
+  return maxDepth;
+};
 // LRU cache
 class LRUCache {
   constructor(capacity) {
