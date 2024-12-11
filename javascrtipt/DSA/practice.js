@@ -16,15 +16,16 @@ const groupAnagrams = (strs) => {
 // OR
 
 const otherGroupAnagrams = (strs) => {
-  const groups = {};
-  for (const str of strs) {
-    const sorted = str.split("").sort().join("");
-    if (!groups[sorted]) {
-      groups[sorted] = [];
+  const groups = {} // store anagrams with the strings as key and the value as an array with the strings that match the key
+  for(const str of strs){
+    const sorted = str.split('').sort().join('') // sort each str
+    // check if the Key exists
+    if(!groups[sorted]){
+      groups[sorted] = []
     }
-    groups[sorted].push(str);
+    groups[sorted].push(str) // add the current str to the array
+    return Object.values(groups) // return the array of anagrams
   }
-  return Object.values(groups);
 };
 
 // Leetcode: 560 Given an array nums, return the k most frequent elements
