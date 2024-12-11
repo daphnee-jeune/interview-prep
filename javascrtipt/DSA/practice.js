@@ -16,15 +16,15 @@ const groupAnagrams = (strs) => {
 // OR
 
 const otherGroupAnagrams = (strs) => {
-  const groups = {} // store anagrams with the strings as key and the value as an array with the strings that match the key
-  for(const str of strs){
-    const sorted = str.split('').sort().join('') // sort each str
+  const groups = {}; // store anagrams with the strings as key and the value as an array with the strings that match the key
+  for (const str of strs) {
+    const sorted = str.split("").sort().join(""); // sort each str
     // check if the Key exists
-    if(!groups[sorted]){
-      groups[sorted] = []
+    if (!groups[sorted]) {
+      groups[sorted] = [];
     }
-    groups[sorted].push(str) // add the current str to the array
-    return Object.values(groups) // return the array of anagrams
+    groups[sorted].push(str); // add the current str to the array
+    return Object.values(groups); // return the array of anagrams
   }
 };
 
@@ -41,7 +41,7 @@ const topKFrequentIterative = (nums, k) => {
     .map(Number); // convert to number
 };
 
-// Subarray Sum Equals K
+// Subarray Sum Equals K: Find the number of continuous subarrays whose sum equals k.
 const subArraySumIterative = (nums, k) => {
   let count = 0;
   let sum = 0;
@@ -56,6 +56,23 @@ const subArraySumIterative = (nums, k) => {
     map.set(sum, (map.get(sum) || 0) + 1);
   }
   return count;
+};
+
+// OR
+const otherSubarrayIterative = (nums, k) => {
+  let count = 0; // tracks the total # of subarrays whos sum === k
+  let sum = 0; // cumulative sum
+  let prefixSum = { 0: 1 }; // store prefix sums and their frequencies
+
+  for(const num of nums){
+    sum += num // add current # to the running sum
+
+    if(prefixSum[sum - k] !== undefined){
+      count += prefixSum[sum - k] // add count of subarrays ending at this index that sum to k
+    }
+    prefixSum[sum] = (prefixSum[sum] ?? 0) + 1 // increment freq of current prefix sum
+  }
+  return count // total # of subarrays
 };
 
 // Two sum
