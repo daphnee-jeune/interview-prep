@@ -27,17 +27,17 @@ const otherGroupAnagrams = (strs) => {
   return Object.values(groups);
 };
 
-// Leetcode: 560
+// Leetcode: 560 Given an array nums, return the k most frequent elements
 const topKFrequentIterative = (nums, k) => {
-  const map = new Map();
-
+  const freq = {}; // obj to store el frequencies
+  // populate obj with the num as a key and the num of ocurrence as the val
   for (const num of nums) {
-    map.set(num, (map.get(num) || 0) + 1);
+    freq[num] = (freq[num] ?? 0) + 1;
   }
-  return Array.from(map.entries())
-    .sort((a, b) => b[1] - a[1])
-    .slice(0, k)
-    .map((entry) => entry[0]);
+  return Object.keys(freq)
+    .sort((a, b) => freq[b] - freq[a]) // sort keys by frequency
+    .slice(0, k) // select the first k keys from the sorted list (the most frequent elements)
+    .map(Number); // convert to number
 };
 
 // Subarray Sum Equals K
@@ -369,3 +369,13 @@ class FigmaDoc {
     return this.layers;
   }
 }
+
+const anagrams = (strs) => {
+  const groups = {};
+  for (const str of strs) {
+    const sorted = str.split("").sort().join("");
+    if (!groups[sorted]) {
+      groups[sorted] = [];
+    }
+  }
+};
