@@ -1,3 +1,152 @@
+class FigmaLayer {
+  constructor(id, name, type, position = { x: 0, y: 0 }, visibility = true) {
+    this.id = id;
+    this.name = name;
+    this.type = type;
+    this.position = position;
+    this.visibility = visibility;
+  }
+
+  update(props) {
+    for (const key in props) {
+      if (this.hasOwnProperty(key)) {
+        this[key] = properties[key];
+      }
+    }
+  }
+}
+
+class FigmaDoc {
+  constructor() {
+    this.layers = [];
+    this.nextId = 1;
+  }
+
+  addLayer(name, type, position = { x: 0, y: 0 }, visibility = true) {
+    const layer = new FigmaLayer(
+      this.nextId++,
+      name,
+      type,
+      position,
+      visibility
+    );
+    this.layers.push(layer);
+    return layer;
+  }
+
+  removeLayer(id) {
+    const index = this.layers.findIndex((layer) => layer.id === id);
+    if (index !== -1) {
+      this.layers.splice(index, 1);
+      return true;
+    }
+    return false;
+  }
+
+  updateLayer(id, props) {
+    const layer = this.layers.find((layer) => layer.id === id);
+    if (!layer) throw new Error("Layer not found");
+    layer.update(props);
+    return layer;
+  }
+
+  getLayer(id) {
+    return this.layers.find((layer) => layer.id === id) || null;
+  }
+
+  getAllLayers() {
+    return this.layers;
+  }
+}
+
+// undo / redo feature
+class UndoRedoManager {
+  constructor() {
+    this.history = []; // stack for undo
+    this.redoStack = []; // stack for redo
+  }
+
+  // add a new action
+  addAction(action) {
+    this.history(action);
+    this.redoStack = []; // clear redo stack after new action
+  }
+
+  // undo the last action
+  undo() {
+    if (!this.history.length) {
+      throw new Error("No actions to undo");
+    }
+    const action = this.history.pop();
+    this.redoStack.push(action);
+    return action;
+  }
+
+  // redo the last undone action
+  redo() {
+    if (!this.redoStack.length) {
+      throw new Error("No actions to redo");
+    }
+    const action = this.redoStack.pop();
+    this.history.push(action);
+    return action;
+  }
+
+  // get current state of the undo stack
+  getHistory() {
+    return [...this.history];
+  }
+
+  // get current state of the redo stack
+  getRedoStack() {
+    return [...this.redoStack];
+  }
+}
+
+// LRU cache
+class LRUCache {
+  constructor(capacity) {
+    this.capacity = capacity;
+    this.cache = {};
+    this.keys = [];
+  }
+
+  get(key) {
+    if (!(key in this.cache)) return -1;
+    // Move the key to the end of the `keys` array to mark it as recently used
+    const index = this.keys.indexOf(key);
+    this.keys.splice(index, 1);
+    this.keys.push(key);
+    return this.cache[key];
+  }
+  put(key, value) {
+    if (key in this.cache) {
+      // If the key exists, update its value and mark it as recently used
+      const index = this.keys.indexOf(key);
+      this.keys.splice(index, 1);
+    } else if (this.keys.length >= this.capacity) {
+      // If the cache is full, remove the least recently used key
+      const lruKey = this.keys.shift(); // remove 1st key (least recently used)
+      delete this.cache[lruKey]; // remove from cache
+    }
+    // Add the key to the end of the `keys` array and update the cache
+    this.keys.push(key);
+    this.cache[key] = value;
+  }
+}
+
+class thing {
+  constructor() {
+    this.properties = {};
+  }
+  set(key, value) {
+    this.properties[key] = value;
+  }
+  get(key) {
+    return this.properties[key];
+  }
+}
+
 // HASHTABLES
 // Group anagrams: Given an array of strings, group anagrams together
 const groupAnagrams = (strs) => {
@@ -295,98 +444,6 @@ const maxDepthIterative = (root) => {
 
   return maxDepth;
 };
-// LRU cache
-class LRUCache {
-  constructor(capacity) {
-    this.capacity = capacity;
-    this.cache = {};
-    this.keys = [];
-  }
-
-  get(key) {
-    if (!(key in this.cache)) return -1;
-    // Move the key to the end of the `keys` array to mark it as recently used
-    const index = this.keys.indexOf(key);
-    this.keys.splice(index, 1);
-    this.keys.push(key);
-    return this.cache[key];
-  }
-  put(key, value) {
-    if (key in this.cache) {
-      // If the key exists, update its value and mark it as recently used
-      const index = this.keys.indexOf(key);
-      this.keys.splice(index, 1);
-    } else if (this.keys.length >= this.capacity) {
-      // If the cache is full, remove the least recently used key
-      const lruKey = this.keys.shift(); // remove 1st key (least recently used)
-      delete this.cache[lruKey]; // remove from cache
-    }
-    // Add the key to the end of the `keys` array and update the cache
-    this.keys.push(key);
-    this.cache[key] = value;
-  }
-}
-
-class FigmaLayer {
-  constructor(id, name, type, position = { x: 0, y: 0 }, visibility = true) {
-    this.id = id;
-    this.name = name;
-    this.type = type;
-    this.position = position;
-    this.visibility = visibility;
-  }
-
-  update(props) {
-    for (const key in props) {
-      if (this.hasOwnProperty(key)) {
-        this[key] = properties[key];
-      }
-    }
-  }
-}
-
-class FigmaDoc {
-  constructor() {
-    this.layers = [];
-    this.nextId = 1;
-  }
-
-  addLayer(name, type, position = { x: 0, y: 0 }, visibility = true) {
-    const layer = new FigmaLayer(
-      this.nextId++,
-      name,
-      type,
-      position,
-      visibility
-    );
-    this.layers.push(layer);
-    return layer;
-  }
-
-  removeLayer(id) {
-    const index = this.layers.findIndex((layer) => layer.id === id);
-    if (index !== -1) {
-      this.layers.splice(index, 1);
-      return true;
-    }
-    return false;
-  }
-
-  updateLayer(id, props) {
-    const layer = this.layers.find((layer) => layer.id === id);
-    if (!layer) throw new Error("Layer not found");
-    layer.update(props);
-    return layer;
-  }
-
-  getLayer(id) {
-    return this.layers.find((layer) => layer.id === id) || null;
-  }
-
-  getAllLayers() {
-    return this.layers;
-  }
-}
 
 const anagrams = (strs) => {
   const groups = {};
