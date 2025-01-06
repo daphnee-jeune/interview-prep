@@ -6,7 +6,6 @@ class FigmaLayer {
     this.position = position;
     this.visibility = visibility;
   }
-
   update(props) {
     for (const key in props) {
       if (this.hasOwnProperty(key)) {
@@ -15,13 +14,11 @@ class FigmaLayer {
     }
   }
 }
-
 class FigmaDoc {
   constructor() {
     this.layers = [];
     this.nextId = 1;
   }
-
   addLayer(name, type, position = { x: 0, y: 0 }, visibility = true) {
     const layer = new FigmaLayer(
       this.nextId++,
@@ -33,7 +30,6 @@ class FigmaDoc {
     this.layers.push(layer);
     return layer;
   }
-
   removeLayer(id) {
     const index = this.layers.findIndex((layer) => layer.id === id);
     if (index !== -1) {
@@ -42,18 +38,15 @@ class FigmaDoc {
     }
     return false;
   }
-
   updateLayer(id, props) {
     const layer = this.layers.find((layer) => layer.id === id);
     if (!layer) throw new Error("Layer not found");
     layer.update(props);
     return layer;
   }
-
   getLayer(id) {
     return this.layers.find((layer) => layer.id === id) || null;
   }
-
   getAllLayers() {
     return this.layers;
   }
@@ -65,13 +58,11 @@ class UndoRedoManager {
     this.history = []; // stack for undo
     this.redoStack = []; // stack for redo
   }
-
   // add a new action
   addAction(action) {
     this.history(action);
     this.redoStack = []; // clear redo stack after new action
   }
-
   // undo the last action
   undo() {
     if (!this.history.length) {
@@ -81,7 +72,6 @@ class UndoRedoManager {
     this.redoStack.push(action);
     return action;
   }
-
   // redo the last undone action
   redo() {
     if (!this.redoStack.length) {
@@ -91,7 +81,6 @@ class UndoRedoManager {
     this.history.push(action);
     return action;
   }
-
   // get current state of the undo stack
   getHistory() {
     return [...this.history];
@@ -102,7 +91,6 @@ class UndoRedoManager {
     return [...this.redoStack];
   }
 }
-
 // LRU cache
 class LRUCache {
   constructor(capacity) {
@@ -110,7 +98,6 @@ class LRUCache {
     this.cache = {};
     this.keys = [];
   }
-
   get(key) {
     if (!(key in this.cache)) return -1;
     // Move the key to the end of the `keys` array to mark it as recently used
@@ -134,7 +121,6 @@ class LRUCache {
     this.cache[key] = value;
   }
 }
-
 class thing {
   constructor() {
     this.properties = {};
@@ -146,12 +132,10 @@ class thing {
     return this.properties[key];
   }
 }
-
 // HASHTABLES
 // Group anagrams: Given an array of strings, group anagrams together
 const groupAnagrams = (strs) => {
   const map = new Map();
-
   for (const str of strs) {
     const sorted = str.split("").sort().join("");
     if (!map.has(sorted)) {
