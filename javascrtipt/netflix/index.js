@@ -10,7 +10,6 @@ const totalOccurencesMap = (arr) => {
   return occurrences;
 };
 
-
 const totalOccurrences = arr => {
   // input validation: throw an error is the array is empty or not an array
   if(!Array.isArray(arr)) throw new Error('oops')
@@ -23,3 +22,18 @@ const totalOccurrences = arr => {
     return acc
   }, {})
 }
+
+// Implement a function to debounce a user input
+const debounce = (cb, delay) => {
+  let timer
+  return function(...args){
+    clearTimeout(timer)
+    timer = setTimeout(() => {
+      cb.apply(this, args)
+    }, delay)
+  }
+}
+const handleSearch = debounce((query) => {
+  console.log("Searching for:", query)
+}, 300)
+document.getElementById('searchInput').addEventListener("input", (e) => handleSearch(e.target.value))
