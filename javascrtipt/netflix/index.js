@@ -1,27 +1,25 @@
-// Write a function that returns a map of the totaled occurrences of elements within an array.
+// Write a function that returns a map of the totaled occurrences of elements within an array
 const totalOccurencesMap = (arr) => {
-  const occurrences = new Map();
-
+  const occurrences = new Map(); // initialization: create a new Map called occurrences
+  // iteration: loop through each element in the array using a for...of loop
   for (const element of arr) {
+    // counting: if the element already exists in the map, increment its value. Otherwise, initialize its value to 1
     occurrences.set(element, (occurrences.get(element) || 0) + 1);
   }
-
+  // return the map: after the loop, the map contains each element and its total occurrences
   return occurrences;
 };
-const totalOccurences = arr => {
-  if(!Array.isArray(arr)) throw new Error('Not an array')
-    return arr.reduce((acc, curr) => {
-      if(acc.hasOwnProperty(curr)) acc[curr] += 1
-      else acc[curr]
-      return acc
-    }, {})
-}
 
-const test = arr => {
+
+const totalOccurrences = arr => {
+  // input validation: throw an error is the array is empty or not an array
   if(!Array.isArray(arr)) throw new Error('oops')
+  // loop through the array to check an dsee if curr is already a prop of acc
   return arr.reduce((acc, curr) => {
+    // if curr exists, it increments the count
     if(acc.hasOwnProperty(curr)) (acc[curr] || 0) += 1
-    else acc[curr]
+    // if curr does not exist, it initializes acc[curr] to 1
+    else acc[curr] = 1
     return acc
   }, {})
 }
