@@ -93,19 +93,19 @@ document.querySelectorAll(".question").forEach(question => {
   // unsubscribe(event, callback): Remove a specific callback for an event.
 class PubSub {
   constructor(){
-    this.events = {}
+    this.events = {} // acts as a registry, where keys represent event names and values are arrays of callback functions registered for each event.
   }
   subscribe(event, callback){
-    if(!this.events[event]) this.events[event] = []
-    this.events.push(callback)
+    if(!this.events[event]) this.events[event] = [] // if the event doesn’t exist in the events registry, it initializes an empty array for that event.
+    this.events.push(callback) // adds the given callback to the array of callbacks for the specified event.
   }
   unsubscribe(event, callback){
-    if(this.events[event]){
+    if(this.events[event]){ // if the event exists in the events registry: filters out the provided callback from the array of callbacks for that event.
       this.events[event] = this.events[event].filter((cb) => cb !== callback)
     }
   }
   publish(event, data){
-    if(this.events[event]){
+    if(this.events[event]){ // ff the event exists in the events registry, loop through all callbacks for that event and invokes them with the provided data.
       this.events[event].forEach((callback) => callback(data))
     }
   }
