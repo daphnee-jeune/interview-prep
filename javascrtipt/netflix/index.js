@@ -115,3 +115,19 @@ const onMessage = data => console.log("New message: ", data)
 pubsub.subscribe("message", onMessage)
 pubsub.publish("message", "Welcome to Netflix")
 pubsub.unsubscribe("message", onMessage)
+
+// Write a function that toggles a "Typing..." indicator in the chat when a user starts typing and removes it when they stop typing after 2 seconds.
+const setupTypingIndicator = (inputId, indicatorId) => {
+  const input = document.getElementById(inputId)
+  const indicator = document.getElementById(indicatorId)
+  let typingTimeout;
+  // listen for user input and toggles a visual indicator dynamically.
+  input.addEventListener("input", () => {
+    indicator.style.display = "block"
+    clearTimeout(typingTimeout)
+    // clear the indicator after 2 seconds
+    typingTimeout = setTimeout(() => {
+      indicator.style.display = "none"
+    }, 2000)
+  })
+}
