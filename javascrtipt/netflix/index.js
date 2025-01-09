@@ -22,7 +22,6 @@ const totalOccurrences = arr => {
     return acc
   }, {})
 }
-
 // Implement a function to debounce a user input
 const debounce = (cb, delay) => {
   let timer
@@ -41,7 +40,6 @@ document.getElementById('searchInput').addEventListener("input", (e) => handleSe
 // Implement a basic throttle function
 const basicThrottle = (fn, delay) => {
   let timer = null // keep track of the timer
-
   return (...args) => {
     if(timerFlag === null){ // if there is no timer currently running
       fn(...args) // execute the main function
@@ -51,6 +49,7 @@ const basicThrottle = (fn, delay) => {
     }
   }
 }
+
 // Implement a throttle function and use it to limit how often a scroll event handler is executed.
 const throttle = (fn, delay) => {
   const lastCall = 0
@@ -113,12 +112,12 @@ class PubSub {
     this.events.push(callback) // adds the given callback to the array of callbacks for the specified event.
   }
   unsubscribe(event, callback){
-    if(this.events[event]){ // if the event exists in the events registry: filters out the provided callback from the array of callbacks for that event.
+    if(this.events[event]){ // if the event exists in the events registry: filter out the provided callback from the array of callbacks for that event.
       this.events[event] = this.events[event].filter((cb) => cb !== callback)
     }
   }
   publish(event, data){
-    if(this.events[event]){ // ff the event exists in the events registry, loop through all callbacks for that event and invokes them with the provided data.
+    if(this.events[event]){ // if the event exists in the events registry, loop through all callbacks for that event and invokes them with the provided data.
       this.events[event].forEach((callback) => callback(data))
     }
   }
@@ -144,3 +143,42 @@ const setupTypingIndicator = (inputId, indicatorId) => {
     }, 2000)
   })
 }
+// Create a UI where users can dynamically add, edit, and remove input fields for a form.
+function createDynamicForm(){
+  const form = document.createElement('form')
+  const addBtn = document.createElement('button')
+
+  addBtn.textContent = 'Add input'
+  addBtn.type = 'button'
+
+  // add new input filed on button click
+  addBtn.addEventListener('click', () => {
+    const inputWrapper = document.createElement('div')
+    const input = document.createElement('input')
+    const removeBtn = document.createElement('button')
+
+    input.type = 'text'
+    input.placeholder = 'Enter value'
+
+    removeBtn.textContent = 'Remove'
+    removeBtn.type = 'button'
+
+    // remove input field on button click
+    removeBtn.addEventListener('click', () => {
+      form.removeChild(inputWrapper)
+    })
+    inputWrapper.appendChild(input)
+    inputWrapper.appendChild(removeBtn)
+    form.appendChild(inputWrapper)
+  })
+  document.body.appendChild(form)
+  document.body.appendChild(addBtn)
+}
+
+// Write a function to replace placeholders (e.g., {name}, {date}) in a string with values from a given object.
+const personalizeTemplate = (template, values) => {
+  // values[key] looks up the placeholder key (key) in the values object and if no value is found in the values object for the placeholder, the original match (i.e {name}) is returned, leaving it unchanged.
+  return template.replace(/\{(\w+)\}/g, (match, key) => values[key] || match)
+}
+personalizeTemplate('Hello {name}, your appointment is on {date}.', { name: 'Alice', date: 'Jan 15' });
+// output: "Hello Alice, your appointment is on Jan 15.
