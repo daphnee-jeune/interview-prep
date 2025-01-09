@@ -182,3 +182,32 @@ const personalizeTemplate = (template, values) => {
 }
 personalizeTemplate('Hello {name}, your appointment is on {date}.', { name: 'Alice', date: 'Jan 15' });
 // output: "Hello Alice, your appointment is on Jan 15.
+
+// write a function to merge two JSON objects representing notification configurations while preserving the structure.
+const mergeJson = (config1, config2) => {
+  return { ...config1, ...config2 }
+}
+
+// Create a rules engine that validates a message configuration based on given rules (e.g., length constraints, required fields).
+const message = { title: 'Hi', body: '' }; // `message` to validate
+const rules = [
+    { 
+        field: 'title', 
+        validate: (val) => val && val.length > 3, 
+        message: 'Title must be longer than 3 characters' 
+    },
+    { 
+        field: 'body', 
+        validate: (val) => val, 
+        message: 'Body is required' 
+    },
+];
+const validateMessage = (message, rules) => {
+  const errors = [] // collect error messages for all failed validations
+  for(const rule of rules){ // iterates through each rule in the rules array
+    if(!rule.validate(message[rule.field])){ // rule.field specifies the field in the message object to validate (i.e 'title').
+      errors.push(rule.message) // add rule.message (the error message) to the errors array
+    }
+  }
+  return errors
+}
