@@ -211,3 +211,24 @@ const validateMessage = (message, rules) => {
   }
   return errors
 }
+
+// Implement a function to limit the number of API calls for sending messages in a given time window.
+const rateLimiter = (fn, limit, time) => {
+  let calls = 0 // tracks the number of active calls to fn within the given time window
+  const queue = [] // holds pending function calls when the rate limit is exceeded
+
+  const processQueue = () => {
+    // if there are any queued fns to process AND the number of active calls is less than the allowed limit
+    if(queue.length > 0 && calls < limit){
+      calls++ // increments the calls counter to indicate that a new function call is being processed
+      const next = queue.shift() // removes the 1st function from the queue and stores it in the next variable
+      next() // executes the function removed from the queue
+      setTimeout(() => calls--, time) // decrements the calls counter after the specified time window has passed and ensures that the rate limiter frees up one slot for another function call after the time delay
+    }
+  }
+  return (...args) => {
+    // pushes a wrapper function into the queue. The wrapper calls fn with the correct this context (this) and arguments (args)
+    queue.push(() => fn.apply(this, args))
+    processQueue()
+  }
+}
