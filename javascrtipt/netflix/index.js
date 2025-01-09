@@ -38,6 +38,19 @@ const handleSearch = debounce((query) => {
 }, 300)
 document.getElementById('searchInput').addEventListener("input", (e) => handleSearch(e.target.value))
 
+// Implement a basic throttle function
+const basicThrottle = (fn, delay) => {
+  let timer = null // keep track of the timer
+
+  return (...args) => {
+    if(timerFlag === null){ // if there is no timer currently running
+      fn(...args) // execute the main function
+      timer = setTimeout(() => { // set a timer to clear the timerFlag after the specified delay
+        timer = null // clear the timerFlag to allow the main function to be executed again
+      }, delay)
+    }
+  }
+}
 // Implement a throttle function and use it to limit how often a scroll event handler is executed.
 const throttle = (fn, delay) => {
   const lastCall = 0
