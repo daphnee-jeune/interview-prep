@@ -276,3 +276,31 @@ console.log(flattenConfig(nestedConfig));
 //   'api.endpoint': 'https://example.com',
 //   'api.timeout': 5000
 // }
+
+// Write a function to find and return all the DOM nodes containing specific text (e.g., {placeholder}) in a given DOM tree.
+const findNodesWithText = (root, searchText) => {
+  const matchingNodes = [] // store nodes that match the search criteria
+
+  // helper function to recursively visit all nodes starting from the root
+  const traverse = node => {
+    // checks if the current node is a text node AND if the text content of the text node contains the searchText
+    if(node.nodeType === Node.TEXT_NODE && node.nodeValue.includes(searchText)){
+      matchingNodes.push(node.parentNode) // add Parent Node to Results
+    }
+    //  recursive - iterates over all current node' child nodes and calls the traverse function on each child
+    node.childNodes.forEach(traverse)
+  }
+  // initiates the traversal by calling traverse on the root node provided as input
+  traverse(root)
+  return matchingNodes
+}
+{/* <div id="root">
+    <p>Hello World</p>
+    <div>
+        <span>Placeholder text</span>
+        <span>Another World</span>
+    </div>
+</div> */}
+const root = document.getElementById('root');
+const result = findNodesWithText(root, 'World');
+console.log(result);
