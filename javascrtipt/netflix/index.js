@@ -241,9 +241,9 @@ const flattenConfig = (config) => {
   for(const key in config){  // iterate over all keys in the config object
     const newKey = parentKey ? `${parentKey}.${key}` : key; // if parentKey is not empty (indicating we're inside a nested object), the new key is formed by appending the current key to the parentKey, separated by a dot and if parentKey is empty (indicating the top level), the new key is just the current key
     if(typeof config[key] === 'object' && !Array.isArray(config[key])){ // determines if the current value is a nested object
-      flattenConfig(config[key], newKey, result) // recursively calls flattenConfig to flatten the nested object
+      flattenConfig(config[key]) // recursively calls flattenConfig to flatten the nested object
     } else {
-      result[newKey] = config[key] // I=if the current value is not an object it’s added to the result object.
+      result[newKey] = config[key] // if the current value is not an object it’s added to the result object.
     }
   }
   return result
