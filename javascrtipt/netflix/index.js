@@ -235,7 +235,9 @@ const rateLimiter = (fn, limit, time) => {
 }
 
 // Given a deeply nested object representing UI module configurations, write a function to transform it into a flat structure for easier processing.
-const flattenConfig = (config, parentKey = '', result = {}) => {
+const flattenConfig = (config) => {
+  let parentKey = ''
+  let result = {}
   for(const key in config){  // iterate over all keys in the config object
     const newKey = parentKey ? `${parentKey}.${key}` : key; // if parentKey is not empty (indicating we're inside a nested object), the new key is formed by appending the current key to the parentKey, separated by a dot and if parentKey is empty (indicating the top level), the new key is just the current key
     if(typeof config[key] === 'object' && !Array.isArray(config[key])){ // determines if the current value is a nested object
@@ -246,6 +248,7 @@ const flattenConfig = (config, parentKey = '', result = {}) => {
   }
   return result
 }
+
 // Example usage
 const nestedConfig = {
   ui: {
