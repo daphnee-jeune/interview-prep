@@ -304,3 +304,58 @@ const findNodesWithText = (root, searchText) => {
 const root = document.getElementById('root');
 const result = findNodesWithText(root, 'World');
 console.log(result);
+
+// Write a function that resolves dependencies between message modules (e.g., a button requires a URL).
+const resolveDependencies = (modules) => {
+  const resolved = {};
+  const unresolved = new Set();
+
+  function resolve(moduleName) {
+      if (resolved[moduleName]) {
+        return resolved[moduleName];
+      }
+
+      if (unresolved.has(moduleName)) {
+        throw new Error(`Circular dependency detected: ${moduleName}`);
+      }
+
+      const module = modules[moduleName];
+      if (!module) {
+        throw new Error(`Module not found: ${moduleName}`);
+      }
+
+      unresolved.add(moduleName);
+      const dependencies = module.dependencies.map(resolve);
+      unresolved.delete(moduleName);
+
+      resolved[moduleName] = {
+        ...module,
+        resolvedDependencies: dependencies
+      };
+      return resolved[moduleName];
+  }
+
+  for (const moduleName in modules) {
+    resolve(moduleName);
+  }
+  return resolved;
+}
+
+// Example usage:
+const messageModules = {
+  button: {
+      dependencies: ['url'],
+      render: () => console.log('Button rendered')
+  },
+  url: {
+      dependencies: [],
+      render: () => console.log('URL resolved')
+  },
+  modal: {
+      dependencies: ['button', 'url'],
+      render: () => console.log('Modal rendered')
+  }
+};
+
+const resolvedModules = resolveDependencies(messageModules);
+console.log(resolvedModules);
