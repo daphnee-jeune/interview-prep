@@ -41,7 +41,7 @@ document.getElementById('searchInput').addEventListener("input", (e) => handleSe
 const basicThrottle = (fn, delay) => {
   let timer = null // keep track of the timer
   return (...args) => {
-    if(timerFlag === null){ // if there is no timer currently running
+    if(timer === null){ // if there is no timer currently running
       fn(...args) // execute the main function
       timer = setTimeout(() => { // set a timer to clear the timerFlag after the specified delay
         timer = null // clear the timerFlag to allow the main function to be executed again
@@ -122,6 +122,7 @@ class PubSub {
     }
   }
 }
+
 const pubsub = new PubSub()
 const onMessage = data => console.log("New message: ", data)
 pubsub.subscribe("message", onMessage)
@@ -232,3 +233,43 @@ const rateLimiter = (fn, limit, time) => {
     processQueue()
   }
 }
+
+// Given a deeply nested object representing UI module configurations, write a function to transform it into a flat structure for easier processing.
+const flattenConfig = (config, parentKey = '', result = {}) => {
+  for(const key in config){  // iterate over all keys in the config object
+    const newKey = parentKey ? `${parentKey}.${key}` : key; // if parentKey is not empty (indicating we're inside a nested object), the new key is formed by appending the current key to the parentKey, separated by a dot and if parentKey is empty (indicating the top level), the new key is just the current key
+    if(typeof config[key] === 'object' && !Array.isArray(config[key])){ // determines if the current value is a nested object
+      flattenConfig(config[key], newKey, result) // recursively calls flattenConfig to flatten the nested object
+    } else {
+      result[newKey] = config[key] // I=if the current value is not an object it’s added to the result object.
+    }
+  }
+  return result
+}
+// Example usage
+const nestedConfig = {
+  ui: {
+      button: {
+          color: 'red',
+          size: 'large'
+      },
+      text: {
+          font: 'Arial',
+          weight: 'bold'
+      }
+  },
+  api: {
+      endpoint: 'https://example.com',
+      timeout: 5000
+  }
+};
+
+console.log(flattenConfig(nestedConfig));
+// Output: {
+//   'ui.button.color': 'red',
+//   'ui.button.size': 'large',
+//   'ui.text.font': 'Arial',
+//   'ui.text.weight': 'bold',
+//   'api.endpoint': 'https://example.com',
+//   'api.timeout': 5000
+// }
