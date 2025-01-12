@@ -359,3 +359,56 @@ const messageModules = {
 
 const resolvedModules = resolveDependencies(messageModules);
 console.log(resolvedModules);
+
+// Objecr manipulation
+const person = {
+  name: "Alice",
+  age: 25,
+  city: "Houston",
+};
+
+// Iterating through objects
+const loopThrough = obj => {
+  for(const key in obj){
+    console.log(`This key: ${key} has a value of ${obj[key]}`)
+  }
+}
+
+// Create an object from an array
+const entries = [["name", "Alice"], ["age", 25], ["city", "Houston"]];
+const personObj1 = Object.fromEntries(entries)
+// OR
+const personObj2 = entries.reduce((obj, [key, value]) => {
+  obj[key] = value
+  return obj
+}, {})
+
+// Grouping an Array into an Object
+const products = [
+  { id: 1, category: "Fruit", name: "Apple" },
+  { id: 2, category: "Vegetable", name: "Carrot" },
+  { id: 3, category: "Fruit", name: "Banana" },
+];
+
+const groupedData = products.reduce((acc, product) => {
+  const { category } = product
+  if(!acc[category]) acc[category] = []
+  acc[category].push(product)
+  return acc
+}, {})
+
+// {
+//   Fruit: [
+//     { id: 1, category: "Fruit", name: "Apple" },
+//     { id: 3, category: "Fruit", name: "Banana" }
+//   ],
+//   Vegetable: [
+//     { id: 2, category: "Vegetable", name: "Carrot" }
+//   ]
+// }
+
+// Manipulating the values in an object
+const scores = { Alice: 90, Bob: 85, Carol: 95 };
+const doubledScores = Object.fromEntries(
+  Object.entries(scores).map(([key, value]) => [key, value * 2])
+)
