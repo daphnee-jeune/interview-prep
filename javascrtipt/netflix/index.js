@@ -307,38 +307,34 @@ console.log(result);
 
 // Write a function that resolves dependencies between message modules (e.g., a button requires a URL).
 const resolveDependencies = (modules) => {
-  const resolved = {};
-  const unresolved = new Set();
+  const resolved = {}; // stores modules with their resolved dependencies
+  const unresolved = new Set(); // tracks modules currently being processed to detect circular dependencies (two or more modules depend on each other creating a loop that prevents proper resolution)
 
   function resolve(moduleName) {
       if (resolved[moduleName]) {
-        return resolved[moduleName];
+          return resolved[moduleName]; // return already resolved module
       }
-
       if (unresolved.has(moduleName)) {
-        throw new Error(`Circular dependency detected: ${moduleName}`);
+          throw new Error(`Circular dependency detected: ${moduleName}`); // prevent infinite loops
       }
-
-      const module = modules[moduleName];
+      const module = modules[moduleName]; // fetch the module configuration from the modules object
       if (!module) {
-        throw new Error(`Module not found: ${moduleName}`);
+          throw new Error(`Module not found: ${moduleName}`); // handle missing modules
       }
-
-      unresolved.add(moduleName);
-      const dependencies = module.dependencies.map(resolve);
-      unresolved.delete(moduleName);
-
+      unresolved.add(moduleName); // mark module as being processed by adding it to the unresolved set
+      const dependencies = module.dependencies.map(resolve); // recursively resolve all dependencies
+      unresolved.delete(moduleName); // removes the module from the unresolved set, marking it as fully processed
+      // adds the resolved module to the resolved object
       resolved[moduleName] = {
-        ...module,
-        resolvedDependencies: dependencies
+          ...module, // copy the original module properties
+          resolvedDependencies: dependencies // include the resolved dependencies
       };
-      return resolved[moduleName];
+      return resolved[moduleName]; // return the resolved module
   }
-
   for (const moduleName in modules) {
-    resolve(moduleName);
+      resolve(moduleName); // ensure all modules are resolved
   }
-  return resolved;
+  return resolved; // return the fully resolved module list
 }
 
 // Example usage:
@@ -360,7 +356,7 @@ const messageModules = {
 const resolvedModules = resolveDependencies(messageModules);
 console.log(resolvedModules);
 
-// Objecr manipulation
+// Object manipulation
 const person = {
   name: "Alice",
   age: 25,
@@ -378,7 +374,7 @@ const loopThrough = obj => {
 const entries = [["name", "Alice"], ["age", 25], ["city", "Houston"]];
 const personObj1 = Object.fromEntries(entries)
 // OR
-const personObj2 = entries.reduce((obj, [key, value]) => {
+const personObj2 = entries.reduce((obj, [key, value]) => { // [key, value]: destructures the inner arrays to extract the first (key) and second (value) within them
   obj[key] = value
   return obj
 }, {})
@@ -412,3 +408,28 @@ const scores = { Alice: 90, Bob: 85, Carol: 95 };
 const doubledScores = Object.fromEntries(
   Object.entries(scores).map(([key, value]) => [key, value * 2])
 )
+
+// We have two identical DOM trees, A and B. For DOM tree A, we have the location of an element. Create a function to find that same element in tree B
+const backWardsPath = (elementInTreeA, rootInTreeB) => {
+  const path = [] // store the path indices that describe how to navigate from the root of tree A to the element
+  let current = elementInTreeA // will help traverse up the DOM tree to find the path to the root
+  // this loop works its way up the tree from the element to the root
+  while(current.parentNode){
+    // retrieves the index of the current element among its siblings
+    const index = [...current.parentNode.children].indexOf(current) // [...current.parentNode.children] converts the HTMLCollection withh all child elements into a regular array
+    path.push(index) // records how to navigate from the parent to current when moving down the tree later
+    current = current.parentNode // moves current up one level in the tree by assigning it to its parent
+  }
+
+  current = rootInTreeB // starting point for the second phase of the function, which navigates down tree B using the path
+  while(path.length){
+    current = current.children[path.pop()]
+  }
+  return current
+}
+
+// Remove duplicates within a string
+const removeDupes = str => {
+  const arr = str.split(' ')
+  return [...new Set(arr)].join(' ')
+}
