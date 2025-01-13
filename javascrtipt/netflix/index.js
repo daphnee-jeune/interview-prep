@@ -129,6 +129,33 @@ pubsub.subscribe("message", onMessage)
 pubsub.publish("message", "Welcome to Netflix")
 pubsub.unsubscribe("message", onMessage)
 
+// OTHER VARIATION
+class EventEmitter {
+  constructor(){
+    this.events = {}
+  }
+  subscribe(eventName, callback){
+    if(!this.events[eventName]) this.events[eventName] = []
+    this.events[eventName].push(callback)
+
+    const index = this.events[eventName].length
+    return {
+      release: () => {
+        if(this.events[eventName]){
+          this.events[eventName].splice(index, 1)
+          if(!this.events[eventName]){
+            delete this.events[eventName]
+          }
+        }
+      }
+    }
+  }
+  emit(eventName, ...args){
+    if(this.events[eventName]){
+      this.events[eventName].forEach(cb => cb.apply(this, args))
+    }
+  }
+}
 // Write a function that toggles a "Typing..." indicator in the chat when a user starts typing and removes it when they stop typing after 2 seconds.
 const setupTypingIndicator = (inputId, indicatorId) => {
   const input = document.getElementById(inputId)
