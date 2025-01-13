@@ -1,3 +1,19 @@
+// Flatten a nested array
+const flattenArr = (arr) => {
+  let result = [];
+  // loop through each sub array
+  arr.forEach((element) => {
+    if (Array.isArray(element)) {
+      // flatten them if they are an array
+      result.push(...element);
+    } else {
+      // if not, then push into the result array to be returned
+      result.push(element);
+    }
+  });
+  return result;
+};
+
 // Write a function that returns a map of the totaled occurrences of elements within an array
 const totalOccurencesMap = (arr) => {
   const occurrences = new Map(); // initialization: create a new Map called occurrences
