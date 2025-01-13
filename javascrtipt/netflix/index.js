@@ -171,6 +171,47 @@ const setupTypingIndicator = (inputId, indicatorId) => {
     }, 2000)
   })
 }
+
+// Implemenmt a fn that takes an object and returns a deep copy of it
+const deepclone = value => {
+  // if the value isnt an object or null, return the value
+  if(typeof value !== 'object' || value === null){
+    return value
+  }
+  // variable to hold the cloned values
+  let clone = Array.isArray(value) ? [] : {}
+
+  // loop through each key
+  for(const key in value){
+    // get the value corresponding to each key
+    const val = value[key]
+    // check if value is an object
+    if(typeof val === 'object'){
+      // recursively clone the value and assign to the corresponding key
+      clone[key] = deepclone(val)
+    } else {
+      // directly copy the value to the clone
+      clone[key] = val
+    }
+  }
+  return clone
+}
+
+// OR
+const deepCopy = value => {
+  if(typeof value !== 'object' || value === null){
+    return value
+  }
+
+  let clone = Array.isArray(value) ? [] : {}
+
+  for(const key in value){
+    const val = value[key]
+    clone[key] = deepclone(val)
+  }
+  return clone
+}
+
 // Create a UI where users can dynamically add, edit, and remove input fields for a form.
 function createDynamicForm(){
   const form = document.createElement('form')
