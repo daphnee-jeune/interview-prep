@@ -49,7 +49,29 @@ const basicThrottle = (fn, delay) => {
     }
   }
 }
-
+// OR
+const netflixThrottle = (callback, delay) => {
+  let timer // timer used to delay the callback fn execution
+  let lastCallTime = 0 // tracks the last time the callback was executed (in ms)
+  // throttled version of the callback - handles timing logic and decide whether to execute the callback immediately or after a delay
+  const throttler = (...args) => {
+    const currentTime = Date.now() // captures the current timestamp
+    const timeDifference = currentTime - lastCallTime // time elapsed since the lastCallTime
+    const delayRemaining = delay - timeDifference // remaining time before the callback executes
+    if(delayRemaining > 0){ // if the prev execution happened too recently
+      clearTimeout(timer) // clear any existing timer to ensure no overlapping timeouts
+      timer = setTimeout(() => { // set a new timer to execute the callback after delayRemaining runs
+        callback(...args) // execute callback
+        lastCallTime = Date.now() // update to the current timestamp
+      }, delayRemaining)
+    } else { // if enough time has passed since the last execution
+      callback(...args) // execute the callback with its arguments
+      lastCallTime = currentTime // update this value
+    }
+    throttler.cancel = () => clearTimeout(timer) // adds a cancel method to throttler() to allow the user to clear the current timer by canceling any pending delayed execution of the callback
+    return throttler
+  }
+}
 // Implement a throttle function and use it to limit how often a scroll event handler is executed.
 const throttle = (fn, delay) => {
   const lastCall = 0
