@@ -53,6 +53,24 @@ const handleSearch = debounce((query) => {
 }, 300)
 document.getElementById('searchInput').addEventListener("input", (e) => handleSearch(e.target.value))
 
+// OR
+const netflixDebounce = (callback, delay, immediate = false) => {
+  let timer = null // initialize timer
+
+  return (...args) => {
+    let shouldCallImmediately = !timer && immediate // determines if the function should be called immediately and not already waiting
+
+    if(shouldCallImmediately) callback(...args) // invoke callback if it's to be called immediately and it's the first call 
+    if(timer) clearTimeout(timer) // reset timer
+    // set new timer that delays the execution of the cb fn
+    timer = setTimeout(() => {
+      // if not immediate then invoke callback after delay
+      if(!immediate) callback(...args)
+      // reset timer after callback execution
+      timer = null
+    }, delay)
+  }
+}
 // Implement a basic throttle function
 const basicThrottle = (fn, delay) => {
   let timer = null // keep track of the timer
