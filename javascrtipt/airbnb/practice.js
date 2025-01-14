@@ -30,12 +30,10 @@ class MyPromise {
     this.handlers = []; // queue for .then() handlers
     this.catchers = []; // queue for .catch handlers
     this.isAborted = false; // whether the promise has been aborted
-
     // Bind resolve and reject methods to ensure correct 'this'
     const resolve = this.resolve.bind(this);
     const reject = this.reject.bind(this);
     const abort = this.abort.bind(this);
-
     try {
       executor(resolve, reject, abort); // Execute the passed fn immediately, passing resolve and reject
     } catch (error) {

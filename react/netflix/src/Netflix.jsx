@@ -44,6 +44,7 @@ const App = () => {
   return (
     <div>
       <input type="text" value={userInput} onChange={handleChange} />
+      {isLoading && 'Loading...'}
       <ul>
         {results[userInput].map((result, i) => {
           return <li key={i}>{result}</li>;

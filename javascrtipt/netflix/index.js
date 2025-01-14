@@ -1,3 +1,120 @@
+const HistogramBuilder = {
+  // Function to build an object that counts occurrences of each item in the list
+  buildObjectBySeenCount: function(list) {
+    const result = {}; // Initialize an empty object to store counts
+    list.forEach(item => {
+      // If the item already exists in the object, increment its count
+      // If it doesn't exist, initialize it to 0 and then increment
+      result[item] = (result[item] || 0) + 1;
+    });
+    return result; // Return the object containing item counts
+  },
+  // Function to build and display a histogram based on the given list
+  buildHistogram: function(list) {
+    // Step 1: Count occurrences of each item in the list
+    const data = this.buildObjectBySeenCount(list);
+    // Step 2: Select DOM elements where histogram components will be rendered
+    const leftAxis = document.querySelector('.left-axis'); // For frequency labels
+    const bottomAxis = document.querySelector('.bottom-axis'); // For item labels
+    const contentAxis = document.querySelector('.content'); // For histogram bars
+    // Step 3: Initialize a Set to keep track of unique frequency values
+    const leftAxisValues = new Set();
+    // Step 4: Populate the left axis with unique frequency values
+    for (const key in data) {
+      const val = data[key]; // Frequency of the current item
+      if (!leftAxisValues.has(val)) {
+        // Add the frequency to the Set if it's not already present
+        leftAxisValues.add(val);
+        // Create a new DOM element to represent this frequency
+        const keyElement = document.createElement('div');
+        keyElement.textContent = val; // Set the text content to the frequency value
+        leftAxis.appendChild(keyElement); // Append the element to the left axis
+      }
+    }
+    // Step 5: Precompute the maximum frequency for scaling bar heights
+    const maxFrequency = Math.max(...Array.from(leftAxisValues));
+    // Step 6: Generate bars for the histogram based on the data
+    for (const key in data) {
+      const val = data[key]; // Frequency of the current item
+      // Create a DOM element for the item's label on the bottom axis
+      const keyElement = document.createElement('div');
+      keyElement.textContent = key; // Set the text content to the item's name
+      // Create a DOM element for the bar corresponding to the item's frequency
+      const valElement = document.createElement('div');
+      // Set the height of the bar proportional to the frequency
+      valElement.style.height = ((val / maxFrequency) * 100) + '%';
+      // Append the item's label to the bottom axis
+      bottomAxis.appendChild(keyElement);
+      // Append the bar to the content area of the histogram
+      contentAxis.appendChild(valElement);
+    }
+  }
+};
+
+const flatten = value => {
+  if(typeof value !== object || value === null) return value // if not an obj or null, return the value
+
+  if(Array.isArray(value)) return flattenAnArray(value) // flatten arr is value is an array
+  return flattenAnObj(value) // otherwise, flatten obj
+}
+function flattenAnArray(input, flattened = []) {
+  input.forEach(item => {
+    if (Array.isArray(item)) {
+      // If item is an array, recursively call flattenArray
+      flattenArray(item, flattened);
+    } else if (typeof item === 'object' && item !== null) {
+      // If item is an object, recursively call flatten on each of its values and concatenate the results
+      Object.values(item).forEach(value => {
+        flattenArray([value], flattened);  // Wrap value in an array to handle both arrays and single values consistently
+      });
+    } else {
+      // If item is neither an array nor an object, push it directly
+      flattened.push(item);
+    }
+  });
+  return flattened;  // Return the flattened array
+}
+
+function flattenObject(input) {
+  let flattenedObj = {}; // Initialize an empty object for the result
+  for (let key in input) { // Iterate over each key in the object
+    let value = input[key]; // Get the value for the current key
+    let flattenedValue = flatten(value); // Recursively flatten the value
+
+    // If the flattened value is an object, merge it with the result object
+    if (typeof flattenedValue === 'object' && flattenedValue !== null && !Array.isArray(flattenedValue)) {
+      Object.assign(flattenedObj, flattenedValue);
+    } else {
+      // If the flattened value is not an object, set it directly on the result object
+      flattenedObj[key] = flattenedValue;
+    }
+  }
+  return flattenedObj; // Return the flattened object
+}
+// Write a function that returns a map of the totaled occurrences of elements within an array
+const totalOccurencesMap = (arr) => {
+  const occurrences = new Map(); // initialization: create a new Map called occurrences
+  // iteration: loop through each element in the array using a for...of loop
+  for (const element of arr) {
+    // counting: if the element already exists in the map, increment its value. Otherwise, initialize its value to 1
+    occurrences.set(element, (occurrences.get(element) || 0) + 1);
+  }
+  // return the map: after the loop, the map contains each element and its total occurrences
+  return occurrences;
+};
+
+const totalOccurrences = arr => {
+  // input validation: throw an error is the array is empty or not an array
+  if(!Array.isArray(arr)) throw new Error('oops')
+  // loop through the array to check and see if curr is already a prop of acc
+  return arr.reduce((acc, curr) => {
+    // if curr exists, it increments the count
+    if(acc.hasOwnProperty(curr)) (acc[curr] || 0) += 1
+    // if curr does not exist, it initializes acc[curr] to 1
+    else acc[curr] = 1
+    return acc
+  }, {})
+}
 // Flatten a nested array
 const flattenArr = (arr) => {
   let result = [];
@@ -26,31 +143,14 @@ const flattenArray = value => {
   }
   return result
 }
-
-// Write a function that returns a map of the totaled occurrences of elements within an array
-const totalOccurencesMap = (arr) => {
-  const occurrences = new Map(); // initialization: create a new Map called occurrences
-  // iteration: loop through each element in the array using a for...of loop
-  for (const element of arr) {
-    // counting: if the element already exists in the map, increment its value. Otherwise, initialize its value to 1
-    occurrences.set(element, (occurrences.get(element) || 0) + 1);
-  }
-  // return the map: after the loop, the map contains each element and its total occurrences
-  return occurrences;
-};
-
-const totalOccurrences = arr => {
-  // input validation: throw an error is the array is empty or not an array
-  if(!Array.isArray(arr)) throw new Error('oops')
-  // loop through the array to check and see if curr is already a prop of acc
-  return arr.reduce((acc, curr) => {
-    // if curr exists, it increments the count
-    if(acc.hasOwnProperty(curr)) (acc[curr] || 0) += 1
-    // if curr does not exist, it initializes acc[curr] to 1
-    else acc[curr] = 1
-    return acc
-  }, {})
+// Write a function to replace placeholders (e.g., {name}, {date}) in a string with values from a given object.
+const personalizeTemplate = (template, values) => {
+  // values[key] looks up the placeholder key (key) in the values object and if no value is found in the values object for the placeholder, the original match (i.e {name}) is returned, leaving it unchanged.
+  return template.replace(/\{(\w+)\}/g, (match, key) => values[key] || match)
 }
+personalizeTemplate('Hello {name}, your appointment is on {date}.', { name: 'Alice', date: 'Jan 15' });
+// output: "Hello Alice, your appointment is on Jan 15.
+
 // Implement a function to debounce a user input
 const debounce = (cb, delay) => {
   let timer
@@ -243,21 +343,15 @@ const setupTypingIndicator = (inputId, indicatorId) => {
 
 // Implemenmt a fn that takes an object and returns a deep copy of it
 const deepclone = value => {
-  // if the value isnt an object or null, return the value
-  if(typeof value !== 'object' || value === null){
+  if(typeof value !== 'object' || value === null){ // if the value isnt an object or null, return the value
     return value
   }
-  // variable to hold the cloned values
-  let clone = Array.isArray(value) ? [] : {}
-
+  let clone = Array.isArray(value) ? [] : {} // variable to hold the cloned values
   // loop through each key
   for(const key in value){
-    // get the value corresponding to each key
-    const val = value[key]
-    // check if value is an object
-    if(typeof val === 'object'){
-      // recursively clone the value and assign to the corresponding key
-      clone[key] = deepclone(val)
+    const val = value[key] // get the value corresponding to each key
+    if(typeof val === 'object'){ // check if value is an object
+      clone[key] = deepclone(val) // recursively clone the value and assign to the corresponding key
     } else {
       // directly copy the value to the clone
       clone[key] = val
@@ -312,14 +406,6 @@ function createDynamicForm(){
   document.body.appendChild(form)
   document.body.appendChild(addBtn)
 }
-
-// Write a function to replace placeholders (e.g., {name}, {date}) in a string with values from a given object.
-const personalizeTemplate = (template, values) => {
-  // values[key] looks up the placeholder key (key) in the values object and if no value is found in the values object for the placeholder, the original match (i.e {name}) is returned, leaving it unchanged.
-  return template.replace(/\{(\w+)\}/g, (match, key) => values[key] || match)
-}
-personalizeTemplate('Hello {name}, your appointment is on {date}.', { name: 'Alice', date: 'Jan 15' });
-// output: "Hello Alice, your appointment is on Jan 15.
 
 // write a function to merge two JSON objects representing notification configurations while preserving the structure.
 const mergeJson = (config1, config2) => {
@@ -571,70 +657,6 @@ const removeDupes = str => {
   return [...new Set(arr)].join(' ')
 }
 
-
-const HistogramBuilder = {
-  // Function to build an object that counts occurrences of each item in the list
-  buildObjectBySeenCount: function(list) {
-    const result = {}; // Initialize an empty object to store counts
-    list.forEach(item => {
-      // If the item already exists in the object, increment its count
-      // If it doesn't exist, initialize it to 0 and then increment
-      result[item] = (result[item] || 0) + 1;
-    });
-    return result; // Return the object containing item counts
-  },
-
-  // Function to build and display a histogram based on the given list
-  buildHistogram: function(list) {
-    // Step 1: Count occurrences of each item in the list
-    const data = this.buildObjectBySeenCount(list);
-
-    // Step 2: Select DOM elements where histogram components will be rendered
-    const leftAxis = document.querySelector('.left-axis'); // For frequency labels
-    const bottomAxis = document.querySelector('.bottom-axis'); // For item labels
-    const contentAxis = document.querySelector('.content'); // For histogram bars
-
-    // Step 3: Initialize a Set to keep track of unique frequency values
-    const leftAxisValues = new Set();
-
-    // Step 4: Populate the left axis with unique frequency values
-    for (const key in data) {
-      const val = data[key]; // Frequency of the current item
-      if (!leftAxisValues.has(val)) {
-        // Add the frequency to the Set if it's not already present
-        leftAxisValues.add(val);
-
-        // Create a new DOM element to represent this frequency
-        const keyElement = document.createElement('div');
-        keyElement.textContent = val; // Set the text content to the frequency value
-        leftAxis.appendChild(keyElement); // Append the element to the left axis
-      }
-    }
-
-    // Step 5: Precompute the maximum frequency for scaling bar heights
-    const maxFrequency = Math.max(...Array.from(leftAxisValues));
-
-    // Step 6: Generate bars for the histogram based on the data
-    for (const key in data) {
-      const val = data[key]; // Frequency of the current item
-
-      // Create a DOM element for the item's label on the bottom axis
-      const keyElement = document.createElement('div');
-      keyElement.textContent = key; // Set the text content to the item's name
-
-      // Create a DOM element for the bar corresponding to the item's frequency
-      const valElement = document.createElement('div');
-      // Set the height of the bar proportional to the frequency
-      valElement.style.height = ((val / maxFrequency) * 100) + '%';
-
-      // Append the item's label to the bottom axis
-      bottomAxis.appendChild(keyElement);
-      // Append the bar to the content area of the histogram
-      contentAxis.appendChild(valElement);
-    }
-  }
-};
-
 // You are tasked with creating a function that retrieves information about trending stocks based on their market capitalization and prices. The goal is to identify the top N trending stocks
 // where N is a specified number, and return details about these stocks in a structured format. The function should return an array of objects, each encapsulating the symbol, name, market cap
 // and current price of these trending stocks
@@ -642,7 +664,6 @@ const trendingStocks = async n => {
   const SYMBOLS_API_BASE_URL = 'api_1';
   const MARKET_CAPS_API_BASE_URL = 'api_2';
   const PRICES_API_BASE_URL = 'api_3';
-
   // fetch symbols and market caps data concurrently to optimize the performance
   const [symbolsResponse, marketCapResponse] = await Promise.all([
     fetch(SYMBOLS_API_BASE_URL),
@@ -658,7 +679,6 @@ const trendingStocks = async n => {
     .sort((stockA, stockB) => stockB['market-cap'] - stockA['market-cap'])
     .slice(0, n) // select top N stocks
     .map(marketCapObj => marketCapObj.symbol) // extract symbols of top stocks
-
   // build the URL for fetching prices by appending the symbols of the top N stocks
   let pricesUrl = PRICES_API_BASE_URL
   pricesUrl += `?symbols=${JSON.stringify(rankedSymbolsByMarketCap)}`
@@ -676,7 +696,6 @@ const trendingStocks = async n => {
   })
   return pricesJson
 }
-
 // Array methods
 Array.prototype.myMap = function(callback) {
   const mappedItems = [] // empty arr to store items
@@ -711,32 +730,25 @@ Array.prototype.myReduce = function(callback, initialValue) {
 Function.prototype.myCall = function(thisContext = window, ...args) {
   // Fallback to window if no context is provided, or use the provided context
   const context = thisContext || globalThis; // globalThis for a more universal approach
-
   // Create a unique property on the context object to avoid overwriting an existing property
   const fnSymbol = Symbol();
   context[fnSymbol] = this;
-
   // Execute the function with the provided arguments
   const result = context[fnSymbol](...args);
-
   // Clean up by deleting the temporary function property
   delete context[fnSymbol];
-
   // Return the result of the function call
   return result;
 };
-
 // Define myApply function on Function prototype
 Function.prototype.myApply = function(thisContext = window, args = []) {
   // Fallback to window if no context is provided, and default args to an empty array if undefined
   return this.myCall(thisContext, ...args); // Utilize myCall with spread operator for arguments
 };
-
 // Define myBind function on Function prototype
 Function.prototype.myBind = function(thisContext, ...bindArgs) {
   // Save the original function context and arguments
   const originalFunc = this;
-
   // Return a new function that captures both initial and subsequent arguments
   return function(...callArgs) {
     // Check if the function is called as a constructor
@@ -745,7 +757,6 @@ Function.prototype.myBind = function(thisContext, ...bindArgs) {
       const instance = new originalFunc(...bindArgs, ...callArgs);
       return instance;
     }
-
     // If not a constructor call, apply the original function with combined arguments
     return originalFunc.myCall(thisContext, ...bindArgs, ...callArgs);
   };
