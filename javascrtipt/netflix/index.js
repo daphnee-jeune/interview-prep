@@ -705,3 +705,48 @@ Array.prototype.myReduce = function(callback, initialValue) {
   }
   return accumulator
 };
+
+// Custom 'this' methods
+// Define myCall function on Function prototype
+Function.prototype.myCall = function(thisContext = window, ...args) {
+  // Fallback to window if no context is provided, or use the provided context
+  const context = thisContext || globalThis; // globalThis for a more universal approach
+
+  // Create a unique property on the context object to avoid overwriting an existing property
+  const fnSymbol = Symbol();
+  context[fnSymbol] = this;
+
+  // Execute the function with the provided arguments
+  const result = context[fnSymbol](...args);
+
+  // Clean up by deleting the temporary function property
+  delete context[fnSymbol];
+
+  // Return the result of the function call
+  return result;
+};
+
+// Define myApply function on Function prototype
+Function.prototype.myApply = function(thisContext = window, args = []) {
+  // Fallback to window if no context is provided, and default args to an empty array if undefined
+  return this.myCall(thisContext, ...args); // Utilize myCall with spread operator for arguments
+};
+
+// Define myBind function on Function prototype
+Function.prototype.myBind = function(thisContext, ...bindArgs) {
+  // Save the original function context and arguments
+  const originalFunc = this;
+
+  // Return a new function that captures both initial and subsequent arguments
+  return function(...callArgs) {
+    // Check if the function is called as a constructor
+    if (new.target) {
+      // Create a new instance of the original function, passing both sets of arguments
+      const instance = new originalFunc(...bindArgs, ...callArgs);
+      return instance;
+    }
+
+    // If not a constructor call, apply the original function with combined arguments
+    return originalFunc.myCall(thisContext, ...bindArgs, ...callArgs);
+  };
+};
