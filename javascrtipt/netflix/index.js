@@ -634,3 +634,45 @@ const HistogramBuilder = {
     }
   }
 };
+
+// You are tasked with creating a function that retrieves information about trending stocks based on their market capitalization and prices. The goal is to identify the top N trending stocks
+// where N is a specified number, and return details about these stocks in a structured format. The function should return an array of objects, each encapsulating the symbol, name, market cap
+// and current price of these trending stocks
+const trendingStocks = async n => {
+  const SYMBOLS_API_BASE_URL = 'api_1';
+  const MARKET_CAPS_API_BASE_URL = 'api_2';
+  const PRICES_API_BASE_URL = 'api_3';
+
+  // fetch symbols and market caps data concurrently to optimize the performance
+  const [symbolsResponse, marketCapResponse] = await Promise.all([
+    fetch(SYMBOLS_API_BASE_URL),
+    fetch(MARKET_CAPS_API_BASE_URL)
+  ])
+  // parse json data
+  const [symbols, marketCaps] = await Promise.all([
+    symbolsResponse.json(),
+    marketCapResponse.json()
+  ])
+  // sort stocks by market cap in desc order to identify top N trending stocks
+  const rankedSymbolsByMarketCap = marketCaps
+    .sort((stockA, stockB) => stockB['market-cap'] - stockA['market-cap'])
+    .slice(0, n) // select top N stocks
+    .map(marketCapObj => marketCapObj.symbol) // extract symbols of top stocks
+
+  // build the URL for fetching prices by appending the symbols of the top N stocks
+  let pricesUrl = PRICES_API_BASE_URL
+  pricesUrl += `?symbols=${JSON.stringify(rankedSymbolsByMarketCap)}`
+  // fetch price data for selected stocks
+  const pricesResponse = await fetch(pricesUrl)
+  const pricesJson = await pricesResponse.json()
+  // match stocks with their names and market caps
+  pricesJson.forEach(obj => {
+    // find and assign the name and market cap to each stock obj in the prices array
+    let name = symbols.find(item => item['symbol'] === obj['symbol']).name // finds the corresponding symbol object and retrieves its name
+    let marketCap = marketCaps.find(item => item['symbol'] === obj['symbol'])['market-cap'] // finds the corresponding market cap object and retrieves its market-cap
+    // name and market-cap are added to the obj
+    obj.name = name 
+    obj['market-cap'] = marketCap
+  })
+  return pricesJson
+}
