@@ -14,6 +14,19 @@ const flattenArr = (arr) => {
   return result;
 };
 
+const flattenArray = value => {
+  let result = []
+
+  if(Array.isArray(value)){
+    value.forEach(val => {
+      result.push(...flattenArray(val))
+    })
+  } else {
+    result.push(value)
+  }
+  return result
+}
+
 // Write a function that returns a map of the totaled occurrences of elements within an array
 const totalOccurencesMap = (arr) => {
   const occurrences = new Map(); // initialization: create a new Map called occurrences
@@ -557,3 +570,67 @@ const removeDupes = str => {
   const arr = str.split(' ')
   return [...new Set(arr)].join(' ')
 }
+
+
+const HistogramBuilder = {
+  // Function to build an object that counts occurrences of each item in the list
+  buildObjectBySeenCount: function(list) {
+    const result = {}; // Initialize an empty object to store counts
+    list.forEach(item => {
+      // If the item already exists in the object, increment its count
+      // If it doesn't exist, initialize it to 0 and then increment
+      result[item] = (result[item] || 0) + 1;
+    });
+    return result; // Return the object containing item counts
+  },
+
+  // Function to build and display a histogram based on the given list
+  buildHistogram: function(list) {
+    // Step 1: Count occurrences of each item in the list
+    const data = this.buildObjectBySeenCount(list);
+
+    // Step 2: Select DOM elements where histogram components will be rendered
+    const leftAxis = document.querySelector('.left-axis'); // For frequency labels
+    const bottomAxis = document.querySelector('.bottom-axis'); // For item labels
+    const contentAxis = document.querySelector('.content'); // For histogram bars
+
+    // Step 3: Initialize a Set to keep track of unique frequency values
+    const leftAxisValues = new Set();
+
+    // Step 4: Populate the left axis with unique frequency values
+    for (const key in data) {
+      const val = data[key]; // Frequency of the current item
+      if (!leftAxisValues.has(val)) {
+        // Add the frequency to the Set if it's not already present
+        leftAxisValues.add(val);
+
+        // Create a new DOM element to represent this frequency
+        const keyElement = document.createElement('div');
+        keyElement.textContent = val; // Set the text content to the frequency value
+        leftAxis.appendChild(keyElement); // Append the element to the left axis
+      }
+    }
+
+    // Step 5: Precompute the maximum frequency for scaling bar heights
+    const maxFrequency = Math.max(...Array.from(leftAxisValues));
+
+    // Step 6: Generate bars for the histogram based on the data
+    for (const key in data) {
+      const val = data[key]; // Frequency of the current item
+
+      // Create a DOM element for the item's label on the bottom axis
+      const keyElement = document.createElement('div');
+      keyElement.textContent = key; // Set the text content to the item's name
+
+      // Create a DOM element for the bar corresponding to the item's frequency
+      const valElement = document.createElement('div');
+      // Set the height of the bar proportional to the frequency
+      valElement.style.height = ((val / maxFrequency) * 100) + '%';
+
+      // Append the item's label to the bottom axis
+      bottomAxis.appendChild(keyElement);
+      // Append the bar to the content area of the histogram
+      contentAxis.appendChild(valElement);
+    }
+  }
+};
