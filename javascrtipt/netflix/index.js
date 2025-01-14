@@ -676,3 +676,32 @@ const trendingStocks = async n => {
   })
   return pricesJson
 }
+
+// Array methods
+Array.prototype.myMap = function(callback) {
+  const mappedItems = [] // empty arr to store items
+  for(let index = 0; index < this.length; index++){
+    mappedItems.push(callback(this[index], index, this)) // call the callback function with the current element, index, and the whole array
+  }
+  return mappedItems
+}
+Array.prototype.myFilter = function(callback) {
+  const filteredItems = []
+  for(let i = 0; i < this.length; i++){
+    // if the callback function returns true for the current element, add it to filteredItems
+    if(callback(this[i], i, this)){
+      filteredItems.push(this[i])
+    }
+  }
+  return filteredItems
+};
+Array.prototype.myReduce = function(callback, initialValue) {
+  let accumulator =  initialValue === undefined ? this[0] : initialValue // initial the acc
+  let startingIndex = initialValue === undefined ? 1 : 0 // determine starting index based on initialValue presence
+
+  for(let index = startingIndex; index < this.length; index++){
+     // apply the callback function to each element, accumulating the result
+    accumulator = callback(accumulator, this[index], index, this)
+  }
+  return accumulator
+};
