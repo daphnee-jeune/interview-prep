@@ -761,3 +761,55 @@ Function.prototype.myBind = function(thisContext, ...bindArgs) {
     return originalFunc.myCall(thisContext, ...bindArgs, ...callArgs);
   };
 };
+
+// Example for "add"
+const add = (...numbers) => {
+  return numbers.reduce((accumulator, num) => accumulator + num);
+};
+
+console.log(add(1,2,3,))// 6
+
+// Step 1. Define expect, toBe, equalTo, greaterThan
+const expect = (args, value) => {
+  return () => {
+    const returnedVal = (args).toBe = () => {
+      returnedVal === value
+    }
+  }
+}
+function expect(x) {
+  return {
+    toBe: (y) => {
+      
+    }
+  }
+}
+
+const result1 = expect(add(1, 2, 3)).toBe(equalTo(6));
+const result2 = expect(add(1, -2)).toBe(equalTo(-1));
+const result3 = expect(add(1)).toBe(equalTo(1));
+const result4 = expect(add(1, 1)).toBe(equalTo(3));
+ 
+const result5 = expect(10 + 20).toBe(greaterThan(4));
+const result6 = expect(4).toBe(greaterThan(5));
+ 
+// should be: true, true, true, false, true, false
+console.log(result1, result2, result3, result4, result5, result6);
+
+const data = {
+  name: "Daph",
+  children: [{
+    name: 'Ari',
+    children: []
+  }],
+}
+function extractNamesWithFlatMap(data) {
+  // Base case: if there are no children, return the current name in an array
+  const currentName = [data.name];
+
+  // Use flatMap to flatten the names extracted from children
+  const childrenNames = (data.children || []).flatMap(child => extractNamesWithFlatMap(child));
+
+  // Combine the current name with the flattened children names
+  return currentName.concat(childrenNames);
+}
