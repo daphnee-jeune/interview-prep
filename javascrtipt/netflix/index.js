@@ -802,6 +802,13 @@ const data = {
     name: 'Ari',
     children: []
   }],
+  name: 'Marcus',
+  children: [{
+    name: 'Sophie',
+    children: [{
+      name: 'Alex'
+    }]
+  }]
 }
 function extractNamesWithFlatMap(data) {
   // Base case: if there are no children, return the current name in an array
@@ -813,3 +820,42 @@ function extractNamesWithFlatMap(data) {
   // Combine the current name with the flattened children names
   return currentName.concat(childrenNames);
 }
+
+// Extract all keys from a nested object
+const nestedObj = {
+  name: "Alice",
+  age: 30,
+  details: {
+    address: {
+      city: "New York",
+      zip: "10001"
+    },
+    job: "Engineer"
+  }
+}
+const extractKeys = data => {
+  const topLevelKeys = Object.keys(data)
+  const nestedKeys = Object.values(data).filter(el => typeof el === 'object' && el !== null).flatMap(val => extractKeys(val))
+  return topLevelKeys.concat(nestedKeys)
+}
+// Output: ["name", "age", "details", "address", "city", "zip", "job"]
+
+// https://codesandbox.io/p/sandbox/hopeful-albattani-y2egv
+
+// Sum up all numbers in a nested obj
+const values = {
+  a: 10,
+  b: { "c": { "d": 5 }, "e": 15 },
+  f: "non-numeric"
+}
+const sumNestedNumbers = data => {
+  return Object.values(data).reduce((sum, value) => {
+    if(typeof value === 'number'){
+      return sum + value
+    } else if(typeof value === 'object'){
+      return sum + sumNestedNumbers(value)
+    }
+    return sum
+  }, 0)
+}
+
