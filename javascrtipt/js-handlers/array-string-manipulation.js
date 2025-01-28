@@ -249,7 +249,7 @@ const longestUniqueSubString = (str) => {
 // isInDict('lol') //false
 // isInDict('*ol') // true
 // isInDict('cr8') // false
-// Create a fn that consumes a dictionary and stores in some format. Then create a handler that looks for a specific string withing that dictionary and returns a boolean whether or not it finds it
+// Create a fn that consumes a dictionary and stores in some format. Then create a handler that looks for a specific string within the dictionary and returns a boolean whether or not it finds it
 class Dictionary {
   constructor(wordsArray) {
     // turn arr into obj of every possible permutations

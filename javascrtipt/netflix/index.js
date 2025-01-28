@@ -57,6 +57,7 @@ const flatten = value => {
   if(Array.isArray(value)) return flattenAnArray(value) // flatten arr is value is an array
   return flattenAnObj(value) // otherwise, flatten obj
 }
+
 function flattenAnArray(input, flattened = []) {
   input.forEach(item => {
     if (Array.isArray(item)) {
@@ -780,7 +781,7 @@ const expect = (args, value) => {
 function expect(x) {
   return {
     toBe: (y) => {
-      
+     return x === y
     }
   }
 }
