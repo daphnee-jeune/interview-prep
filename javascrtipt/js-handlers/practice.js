@@ -173,3 +173,41 @@ const sumOfMinAndMax = numbers => {
   }
   return totalSum
 }
+
+// Implement a simplified version of a banking system with the ability to create an account, deposit/withdraw, and read the account balance
+class BankingSystem extends BankingSystemInterface {
+  constructor(){
+    super()
+    this.accounts = {}
+  }
+  createAccount(accountId){
+    if(this.accounts[accountId]){
+      throw new Error('This account already exists')
+    }
+    this.accounts[accountId] = 0
+  }
+  deposit(accountId, amount){
+    if(!this.accounts.hasOwnProperty(accountId)){
+      throw new Error('This account does not exist')
+    }
+    if(amount < 0){
+      throw new Error('Amount must be positive')
+    }
+    this.accounts[accountId] += amount
+  }
+  withdraw(accountId, amount){
+    if(!this.accounts.hasOwnProperty(accountId)){
+      throw new Error('This account does not exist')
+    }
+    if(amount < 0){
+      throw new Error('Amount must be positive')
+    }
+    this.accounts[accountId] -= amount
+  }
+  getBalance(accountId){
+    if(!this.acccounts.hasOwnProperty(accountId)){
+      throw new Error('Account does not exist')
+    }
+    return this.accounts[accountId]
+  }
+}
