@@ -860,3 +860,37 @@ const sumNestedNumbers = data => {
   }, 0)
 }
 
+// Create a fn to grab the names in this object and return them in a flat array
+const dataa = {
+  name: "Daph",
+  children: [{
+    name: 'Ari',
+    children: []
+  }],
+  name: 'Marcus',
+  children: [{
+    name: 'Sophie',
+    children: [{
+      name: 'Alex'
+    }]
+  }]
+}
+const getAllNames = obj => {
+  const names = []
+  if(obj.name){
+    names.push(obj.name)
+  }
+  if(obj.children && Array.isArray(obj.children)){
+    obj.children.forEach(child => {
+      names = names.concat(getAllNames(child))
+    })
+  }
+  return names
+}
+// With flatMap
+const getAllNamesFlatMap = obj => {
+  return [
+    obj.name,
+    ...(obj.children || []).flatMap(child => getAllNamesFlatMap(child))
+  ].filter(Boolean)
+}
