@@ -106,108 +106,133 @@ const myGetElementById = (id, element = document.body) => {
 const company = {
   sales: [
     { name: "John", salary: 1000 },
-    { name: "Alice", salary: 1600 }
+    { name: "Alice", salary: 1600 },
   ],
   development: {
     sites: [
       { name: "Peter", salary: 2000 },
-      { name: "Alex", salary: 1800 }
+      { name: "Alex", salary: 1800 },
     ],
-    internals: [
-      { name: "Jack", salary: 1300 }
-    ]
-  }
+    internals: [{ name: "Jack", salary: 1300 }],
+  },
 };
 const getNames = (obj) => {
-  let names = []
-  for(let key in obj){
-    if(Array.isArray(obj[key])){
-      obj[key].forEach(item => {
-        if(item.name){
-          names.push(item.name)
+  let names = [];
+  for (let key in obj) {
+    if (Array.isArray(obj[key])) {
+      obj[key].forEach((item) => {
+        if (item.name) {
+          names.push(item.name);
         }
-      })
-    } else if (typeof obj[key] === 'object' && obj[key] !== null){
-      names = names.concat(getNames(obj[key]))
+      });
+    } else if (typeof obj[key] === "object" && obj[key] !== null) {
+      names = names.concat(getNames(obj[key]));
     }
   }
-  return names
-}
+  return names;
+};
 
 // Return the sum of all salaries within this data structure
-const sumSalaries = obj => {
-  const totalSalaries = 0
+const sumSalaries = (obj) => {
+  const totalSalaries = 0;
 
-  for(let key in obj){
-    if(Array.isArray(obj[key])){
-      obj[key].forEach(item => {
-        if(item.salary){
-          totalSalaries += item.salary
+  for (let key in obj) {
+    if (Array.isArray(obj[key])) {
+      obj[key].forEach((item) => {
+        if (item.salary) {
+          totalSalaries += item.salary;
         }
-      })
-    } else if(typeof obj[key] === 'object' && obj[key] !== null){
-      totalSalaries += sumSalaries(obj[key])
+      });
+    } else if (typeof obj[key] === "object" && obj[key] !== null) {
+      totalSalaries += sumSalaries(obj[key]);
     }
   }
-  return totalSalaries
-}
+  return totalSalaries;
+};
 
 // Given a list of list of numbers, find the largest and smallest number and return a sum of the largest and smallest numbers for each row. Return sum of all the numbers from each row.
-const numbers = ['234', '45', '4', '98', '22', '111']
-const minMaxSum = arr => {
-  let min = Math.min(...arr)
-  let max = Math.max(...arr)
-  return min + max
-}
+const numbers = ["234", "45", "4", "98", "22", "111"];
+const minMaxSum = (arr) => {
+  let min = Math.min(...arr);
+  let max = Math.max(...arr);
+  return min + max;
+};
 
- // OR
-const sumOfMinAndMax = numbers => {
-  let totalSum = 0
-  for(let num of numbers){
-    const nums = num.split('').map(Number)
-    const largest = Math.max(...nums)
-    const smallest = Math.min(...nums)
+// OR
+const sumOfMinAndMax = (numbers) => {
+  let totalSum = 0;
+  for (let num of numbers) {
+    const nums = num.split("").map(Number);
+    const largest = Math.max(...nums);
+    const smallest = Math.min(...nums);
 
-    const numSum = largest + smallest
-    totalSum += numSum
+    const numSum = largest + smallest;
+    totalSum += numSum;
   }
-  return totalSum
-}
+  return totalSum;
+};
 
 // Implement a simplified version of a banking system with the ability to create an account, deposit/withdraw, and read the account balance
 class BankingSystem extends BankingSystemInterface {
-  constructor(){
-    super()
-    this.accounts = {}
+  constructor() {
+    super();
+    this.accounts = {};
   }
-  createAccount(accountId){
-    if(this.accounts[accountId]){
-      throw new Error('This account already exists')
+  createAccount(accountId) {
+    if (this.accounts[accountId]) {
+      throw new Error("This account already exists");
     }
-    this.accounts[accountId] = 0
+    this.accounts[accountId] = 0;
   }
-  deposit(accountId, amount){
-    if(!this.accounts.hasOwnProperty(accountId)){
-      throw new Error('This account does not exist')
+  deposit(accountId, amount) {
+    if (!this.accounts.hasOwnProperty(accountId)) {
+      throw new Error("This account does not exist");
     }
-    if(amount < 0){
-      throw new Error('Amount must be positive')
+    if (amount < 0) {
+      throw new Error("Amount must be positive");
     }
-    this.accounts[accountId] += amount
+    this.accounts[accountId] += amount;
   }
-  withdraw(accountId, amount){
-    if(!this.accounts.hasOwnProperty(accountId)){
-      throw new Error('This account does not exist')
+  withdraw(accountId, amount) {
+    if (!this.accounts.hasOwnProperty(accountId)) {
+      throw new Error("This account does not exist");
     }
-    if(amount < 0){
-      throw new Error('Amount must be positive')
+    if (amount < 0) {
+      throw new Error("Amount must be positive");
     }
-    this.accounts[accountId] -= amount
+    this.accounts[accountId] -= amount;
   }
-  getBalance(accountId){
-    if(!this.acccounts.hasOwnProperty(accountId)){
-      throw new Error('Account does not exist')
+  getBalance(accountId) {
+    if (!this.acccounts.hasOwnProperty(accountId)) {
+      throw new Error("Account does not exist");
     }
-    return this.accounts[accountId]
+    return this.accounts[accountId];
+  }
+}
+
+// Implement a cache with expiration
+class Cache {
+  constructor() {
+    this.cache = new Map();
+  }
+  set(key, value, ttl) {
+    const expiration = Date.now() + ttl;
+    this.cache.set(key, { value, expiration });
+  }
+  get(key){
+    const entry = this.cache.get(key)
+    if(entry && (entry.expiration > Date.now())){
+      return entry.value
+    }
+    this.cache.delete(key)
+    return null
+  }
+  clearExpired(){
+    const now = Date.now()
+    for(const [key, entry] of this.cache){
+      if(entry.expiration <= now){
+        this.cache.delete(key)
+      }
+    }
   }
 }
