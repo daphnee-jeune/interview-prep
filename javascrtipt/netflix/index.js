@@ -978,11 +978,11 @@ const otherExcludeItems = (items, excludes) => {
 }
 
 // Given a dataset (array of objects) and the match object, write a function that produces an array containing only the objects that satisfy all the criteria in the match object
-data: [
+const params = [
   { name: 'John', company: 'Google', position: 'Software Engineer', level: 'Entry' },
   { name: 'Ann', company: 'Waymo', position: 'Product Manager', level: 'Entry' }
 ]
-match: { position: 'Product Manager', level: 'Entry' }
+const match = { position: 'Product Manager', level: 'Entry' }
 // Output
 [
   { name: 'Ann', company: 'Waymo', position: 'Product Manager', level: 'Entry' }
