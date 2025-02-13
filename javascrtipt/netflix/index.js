@@ -839,6 +839,16 @@ const extractKeys = data => {
   const nestedKeys = Object.values(data).filter(el => typeof el === 'object' && el !== null).flatMap(val => extractKeys(val))
   return topLevelKeys.concat(nestedKeys)
 }
+const otherExtractKeys = data => {
+  let keys = []
+  for(const key in data){
+    keys.push(key)
+    if(typeof data[key] === 'object'){
+      keys = keys.concat(otherExtractKeys(data[key]))
+    }
+  }
+  return keys
+}
 // Output: ["name", "age", "details", "address", "city", "zip", "job"]
 
 // https://codesandbox.io/p/sandbox/hopeful-albattani-y2egv
@@ -859,7 +869,17 @@ const sumNestedNumbers = data => {
     return sum
   }, 0)
 }
-
+const otherSumNestedNumbers = obj => {
+  let total = 0
+  for(const key in obj){
+    if(typeof obj[key] === 'number'){
+      total += obj[key]
+    } else if(typeof obj[key] === 'object' && obj[key] !== null){
+      total += test(obj[key])
+    }
+  }
+  return total
+}
 // Create a fn to grab the names in this object and return them in a flat array
 const dataa = {
   name: "Daph",
@@ -893,4 +913,66 @@ const getAllNamesFlatMap = obj => {
     obj.name,
     ...(obj.children || []).flatMap(child => getAllNamesFlatMap(child))
   ].filter(Boolean)
+}
+// Create a fn to grab the names in this object and return them in a flat array
+const company = {
+  sales: [
+    { name: "John", salary: 1000 },
+    { name: "Alice", salary: 1600 }
+  ],
+  development: {
+    sites: [
+      { name: "Peter", salary: 2000 },
+      { name: "Alex", salary: 1800 }
+    ],
+    internals: [
+      { name: "Jack", salary: 1300 }
+    ]
+  }
+};
+const extractAllNames = data => {
+  const names = []
+  for(let key in data){
+    if(Array.isArray(data[key])){
+      data[key].forEach(item => {
+        if(item.name){
+          names.push(item.name)
+        }
+      })
+    } else if(typeof data[key] === 'object' && data[key] !== null){
+      names = names.concat(extractAllNames(data[key]))
+    }
+  }
+  return names
+}
+
+// Define a function excludeItems tasked with filtering an array of items by removing those that meet specific exclusion criteria. This function plays a pivotal role in data processing, enabling the refinement of datasets based on dynamic conditions
+// Items: Array of objects with various properties such as color, type, and age
+// Excludes: Array of objects Criteria for exclusion as an object containing properties k (the property name to consider for exclusion) and v (the value of that property leading to exclusion)
+// Returns a filtered array comprising items that do not align with the specified exclusion criteria.
+const items = [
+{ color: 'red', type: 'tv', age: 18 },
+{ color: 'silver', type: 'phone', age: 20 },
+{ color: 'blue', type: 'book', age: 17 }
+];
+
+const excludes = [
+{ k: 'color', v: 'blue' },
+{ k: 'type', v: 'phone' }
+];
+
+[{ color: 'red', type: 'tv', age: 18 }]
+
+const excludeItems = (items, excludes) => {
+  return items.reduce((result, item) => {
+    const shouldExclude = excludes.some(exclude => item[exclude.k] === exclude.v)
+    if(!shouldExclude) result.push(item)
+    return result
+  }, [])
+}
+// OR
+const otherExcludeItems = (items, excludes) => {
+  return items.filter(item => {
+    return !excludes.some(exclude => item[exclude.k] === exclude.v)
+  })
 }
