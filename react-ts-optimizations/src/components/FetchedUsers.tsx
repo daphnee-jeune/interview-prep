@@ -48,4 +48,4 @@ const UserList2 = () => {
 }
 // Always type the shape of the data to be returned
 // Always make sure to account for loading and error states
-export default {UserList1, UserList2};
+export default { UserList1, UserList2 };
