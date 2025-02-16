@@ -1035,3 +1035,39 @@ const returnPaths = structure => {
   traverse('', structure)
   return result
 }
+
+// Given a nested object, write a function that flattens it into a single-level object with dot-separated keys
+// Input
+const nestedObject = {
+  a: 1,
+  b: {
+    c: 2,
+    d: {
+      e: 3,
+      f: 4,
+    },
+  },
+  g: 5,
+};
+// Output
+const output = {
+  "a": 1',
+  "b.c": 2,
+  "b.d.e": 3,
+  "b.d.f": 4,
+  "g": 5,
+}
+const flattenObj = nestedObj => {
+  const flattened = {}
+
+  function traverse(currentKey, currentObj){
+    for(const key in currentObj){
+      const newKey = currentKey ? `${currentKey}.${key}` : key
+      if(typeof currentObj[key] === 'object' && currentObj[key] !== null){
+        traverse(newKey, currentObj[key])
+      }
+    }
+  }
+  traverse('', nestedObj)
+  return flattened
+}
