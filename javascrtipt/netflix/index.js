@@ -992,3 +992,46 @@ const findMatches = (data, match) => {
     return Object.entries(match).every(([key, value]) => item[key] === value)
   })
 }
+
+// Given a nested folder structure as an object, write a function that recursively retrieves all file paths while ignoring empty directories
+// Example input
+const folderStructure = {
+  src: {
+    components: {
+    Button: {
+      "index.js": "file",
+      "style.css": "file"
+      }
+    },
+    utils: {
+      "helpers.js": "file"
+    }
+  },
+  public: {
+    "index.html": "file"
+  }
+ };
+// Expected Output:
+[
+ "src/components/Button/index.js",
+ "src/components/Button/style.css",
+ "src/utils/helpers.js",
+ "public/index.html"
+]
+const returnPaths = structure => {
+  const result = []
+  
+  function traverse(currentPath, currentObject){
+    for(const key in currentObject){
+      if(currentObject[key] === 'file'){
+        result.push(currentPath + key)
+      } else {
+        if(Object.keys(currentObject[key].length > 0)){
+          traverse(currentPath + key + '/', currentObject[key])
+        }
+      }
+    }
+  }
+  traverse('', structure)
+  return result
+}
