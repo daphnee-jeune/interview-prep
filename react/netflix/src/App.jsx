@@ -23,29 +23,28 @@ const App = () => {
 
   const debouncedSearch = useCallback(
     debounce(async (term) => {
-      if (!term.trim()) return
-      if(cache[term]){
-        setResults(cache[term])
-        return
+      if (!term.trim()) return;
+      if (cache[term]) {
+        setResults(cache[term]);
+        return;
       }
 
       try {
-        setIsLoding(true)
-        setError(null)
-        const searchResults = await executeSearch(term)
-        setCache(prevCache => ({
+        setIsLoding(true);
+        setError(null);
+        const searchResults = await executeSearch(term);
+        setCache((prevCache) => ({
           ...prevCache,
-          [term]: searchResults
-        }))
-        setResults(searchResults)
-      } catch(err){
-        setError('Failed to fetch results. Please try again')
+          [term]: searchResults,
+        }));
+        setResults(searchResults);
+      } catch (err) {
+        setError("Failed to fetch results. Please try again");
       } finally {
-        setIsLoding(false)
+        setIsLoding(false);
       }
-    }, 300)
-    [cache]
-  )
+    }, 300)[cache]
+  );
   return (
     <div>
       <input
@@ -58,7 +57,7 @@ const App = () => {
       {error && <p style={{ color: "red" }}>{error}</p>}
       <ul>
         {results.map((result, i) => {
-          <li key={i}>{result}</li>
+          <li key={i}>{result}</li>;
         })}
       </ul>
     </div>
@@ -66,12 +65,12 @@ const App = () => {
 };
 
 const debounce = (fn, delay = 500) => {
-  let timer
+  let timer;
   return (...args) => {
-    clearTimeout(timer)
+    clearTimeout(timer);
     timer = setTimeout(() => {
-      fn(...args)
-    }, delay)
-  }
-}
+      fn(...args);
+    }, delay);
+  };
+};
 export default App;
