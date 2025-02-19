@@ -1050,13 +1050,13 @@ const nestedObject = {
   g: 5,
 };
 // Output
-const output = {
-  "a": 1',
-  "b.c": 2,
-  "b.d.e": 3,
-  "b.d.f": 4,
-  "g": 5,
-}
+// const output = {
+//   "a": 1',
+//   "b.c": 2,
+//   "b.d.e": 3,
+//   "b.d.f": 4,
+//   "g": 5,
+// }
 const flattenObj = nestedObj => {
   const flattened = {}
 
@@ -1070,4 +1070,112 @@ const flattenObj = nestedObj => {
   }
   traverse('', nestedObj)
   return flattened
+}
+
+// Given a nested object, write a function that sums all the numeric values in the object
+// Input
+const nestedStructure = {
+  a: 1,
+  b: {
+    c: 2,
+    d: {
+      e: 3,
+      f: 4,
+    },
+  },
+  g: 5,
+};
+// Output
+15
+const sumUpNumbers = (structure) => {
+  return Object.values(structure).reduce((sum, currValue) => {
+    if(typeof currValue === 'number'){
+      return sum + currValue
+    } else if(typeof currValue === 'object' && currValue !== null && !Array.isArray(currValue)){
+      return sum + sumUpNumbers(currValue)
+    } else {
+      return sum
+    }
+  }, 0)
+}
+
+// Given a nested object, write a function that returns an array of all keys in the object
+const nestedObject2 = {
+  a: 1,
+  b: {
+    c: 2,
+    d: {
+      e: 3,
+      f: 4,
+    },
+  },
+  g: 5,
+};
+// Output
+["a", "b", "c", "d", "e", "f", "g"]
+
+const returnKeys = data => {
+  const result = []
+
+  function traverse(currentObj){
+    for(const key in currentObj){
+      result.push(key)
+      if(typeof currentObj[key] === 'object' && currentObj[key] !== null){
+        traverse(currentObj[key])
+      }
+    }
+  }
+  traverse(data)
+  return result
+}
+
+// Given a nested object, write a function that counts the number of "leaf" values (values that are not objects)
+const numberOfLeaves = nestedObj => {
+  const num = 0
+
+  function traverse(currentObj){
+    for(const key in currentObj){
+      if(typeof currentObj[key] !== 'object' || currentObj[key] === null){
+        num++
+      } else {
+        traverse(currentObj[key])
+      }
+    }
+  }
+  traverse(nestedObj)
+  return num
+}
+
+// Given a nested object, write a function that filters the object to include only key-value pairs where the value is of a specific type (e.g., string, number, boolean)
+// Input
+const nestedObject3 = {
+  a: 1,
+  b: "hello",
+  c: {
+    d: true,
+    e: "world",
+  },
+  f: 42,
+};
+// Output
+// {
+//   b: "hello",
+//   c: {
+//     e: "world",
+//   },
+// }
+const returnMatch = (nestedObj, type) => {
+  const matchedType =  {}
+
+  function traverse(currentObj){
+    for(const key in currentObj){
+      if(typeof currentObj[key] === type){
+        matchedType[key] = currentObj[key]
+      } else if(typeof currentObj[key] === 'object' && currentObj[key] !== null){
+        matchedType[key] = traverse(currentObj[key])
+      }
+    }
+  }
+  traverse(nestedObj)
+  return matchedType
 }
