@@ -1,60 +1,62 @@
-import React, { useState, useEffect, useCallback } from "react";
+import { useState, useEffect, useCallback } from "react";
+import "./App.css";
 
 const api_url = "https://dummyjson.com/products";
 
-const Test = () => {
-  // Store the full list of product titles
-  const [allResults, setAllResults] = useState([]);
-  // Store the currently displayed (filtered) results
-  const [results, setResults] = useState([]);
-  // User input from the search box
+function App() {
   const [userInput, setUserInput] = useState("");
-  // Client-side cache: keys are search terms, values are the filtered result arrays
-  const [cache, setCache] = useState({});
-  // Loading and error states
-  const [loading, setLoading] = useState(false);
+  const [products, setProducts] = useState([]);
+  const [filteredProducts, setFilteredProducts] = useState([]);
+  const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState(null);
+  const [isNotFound, setIsNotFound] = useState(false);
+  const [cache, setCache] = useState({});
 
-  // Fetch the full list of products once when the component mounts
-  useEffect(() => {
-    const fetchResults = async () => {
-      try {
-        setLoading(true);
-        const response = await fetch(api_url);
-        const data = await response.json();
-        const titles = data.products.map(product => product.title);
-        setAllResults(titles);
-        setResults(titles);
-      } catch (err) {
-        console.error("Error: ", err);
-        setError(err);
-      } finally {
-        setLoading(false);
-      }
-    };
-    fetchResults();
-  }, []);
-  
-  // Handle changes in the input field
+  // Debounced search function
+  const debouncedSearch = useCallback(
+    debounce((value) => {
+      const filtered = products.filter((product) =>
+        product.toLowerCase().includes(value.toLowerCase())
+      );
+      !filtered.length ? setIsNotFound(true) : setIsNotFound(false);
+      setFilteredProducts(filtered);
+    }, 300),
+    [products]
+  );
+
   const handleChange = (e) => {
     const value = e.target.value;
     setUserInput(value);
-    // If the user input exists in our cache, use the cached result
+    // if user input is already in cache, use the cached result
     if (cache.hasOwnProperty(value)) {
-      setResults(cache[value]);
-      return;
+      setProducts(cache[value]);
     }
-
-    // Otherwise, filter the full list of titles
-    const filteredProducts = allResults.filter(item =>
-      item.toLowerCase().includes(value.toLowerCase())
-    );
-
-    // Update the cache with the new search term and its results
-    setCache(prevCache => ({ ...prevCache, [value]: filteredProducts }));
-    // Update the results state with the filtered products
-    setResults(filteredProducts);
+    // update the cache with the new search term and its results
+    setCache((prevCache) => ({ ...prevCache, [value]: filteredProducts }));
+    console.log(cache);
+    debouncedSearch(value);
   };
+
+  useEffect(() => {
+    const fetchProducts = async () => {
+      try {
+        setIsLoading(true);
+        const response = await fetch(api_url);
+        const data = await response.json();
+        const titles = data.products.map((product) => product.title);
+        setProducts(titles);
+        setFilteredProducts(titles);
+      } catch (err) {
+        setError(err);
+      } finally {
+        setIsLoading(false);
+      }
+    };
+    fetchProducts();
+  }, []);
+
+  if (isLoading) return <h1>Loading...</h1>;
+  if (error) return <p>Oops, try again</p>;
 
   return (
     <>
@@ -64,15 +66,25 @@ const Test = () => {
         value={userInput}
         onChange={handleChange}
       />
-      {loading && <p>Loading...</p>}
-      {error && <p>Oops, something went wrong.</p>}
-      <ul>
-        {results.map((result, index) => (
-          <li key={index}>{result}</li>
-        ))}
-      </ul>
+      <>
+        {isNotFound ? (
+          <p>Not found</p>
+        ) : (
+          filteredProducts.map((product) => <li key={product}>{product}</li>)
+        )}
+      </>
     </>
   );
-};
+}
 
-export default Test;
+function debounce(fn, delay) {
+  let timer;
+  return (...args) => {
+    clearTimeout(timer);
+    timer = setTimeout(() => {
+      fn.apply(this, args);
+    }, delay);
+  };
+}
+
+export default App;
