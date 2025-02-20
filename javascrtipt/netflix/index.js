@@ -55,7 +55,7 @@ const flatten = value => {
   if(typeof value !== object || value === null) return value // if not an obj or null, return the value
 
   if(Array.isArray(value)) return flattenAnArray(value) // flatten arr is value is an array
-  return flattenAnObj(value) // otherwise, flatten obj
+  return flatten(value) // otherwise, flatten obj
 }
 
 function flattenAnArray(input, flattened = []) {
