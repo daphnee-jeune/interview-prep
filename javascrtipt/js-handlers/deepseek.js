@@ -128,3 +128,20 @@ const longestSubstringWithoutRepeats = (str) => {
  }
  return maxLen;
 };
+
+const debounce = (fn, delay) => {
+ let timer;
+ return(...args) => {
+  // clear the previous timeout to prevent multiple executions
+  clearTimeout(timer)
+   // set a new timeout to execute the function after the delay
+  timer = setTimeout(() => {
+   fn.apply(this, args) // preserve the context and pass arguments
+  }, delay)
+ }
+}
+const searchInput = document.getElementById('search')
+const debouncedSearch = debounce(query => {
+ console.log(`Searching for: ${query}`)
+}, 300)
+searchInput.addEventListener('input', (e) => debouncedSearch(e.target.value));
