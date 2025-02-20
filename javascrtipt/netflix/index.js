@@ -946,6 +946,40 @@ const extractAllNames = data => {
   return names
 }
 
+// Return the authors values in an array from this data structure
+const comments = {
+  author: "Alice",
+  text: "This is a great post!",
+  replies: [
+    {
+      author: "Bob",
+      text: "Thanks, Alice!",
+      replies: [
+        {
+          author: "Charlie",
+          text: "I agree with Bob.",
+        },
+      ],
+    },
+    {
+      author: "Dave",
+      text: "Nice discussion!",
+    },
+  ],
+};
+const getAuthors = (obj) => {
+  const authors = [];
+  if (obj.author) {
+    authors.push(obj.author);
+  }
+  if (obj.replies && Array.isArray(obj.replies)) {
+    obj.replies.forEach((reply) => {
+      result.push(...getAuthors(reply));
+    });
+  }
+  return authors;
+};
+
 // Define a function excludeItems tasked with filtering an array of items by removing those that meet specific exclusion criteria. This function plays a pivotal role in data processing, enabling the refinement of datasets based on dynamic conditions
 // Items: Array of objects with various properties such as color, type, and age
 // Excludes: Array of objects Criteria for exclusion as an object containing properties k (the property name to consider for exclusion) and v (the value of that property leading to exclusion)

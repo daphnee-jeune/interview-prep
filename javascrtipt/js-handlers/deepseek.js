@@ -60,88 +60,88 @@ const sumUpNums = (arr) => {
 // output: 'Javascript'
 // plan: split the sentence by the space to isolate the words, loop through each word and compare their length to each other
 const longestWord = (sentence) => {
- // if(!sentence.length) return  Not needed bc it handles edge cases like an empty string by starting the accumulator at ''
- return sentence.split(' ').reduce((word, longest) => {
-  word.length > longest.length ? word : longest
- }, '')
-}
+  // if(!sentence.length) return  Not needed bc it handles edge cases like an empty string by starting the accumulator at ''
+  return sentence.split(" ").reduce((word, longest) => {
+    word.length > longest.length ? word : longest;
+  }, "");
+};
 
 // Flatten a nested arr
 // input: [a, b, [c, d [e ,f, g]]]
 // output: [a, b, c, d , e, f, g]
 // plan: iterate through array. if el is an array then update result arr with recursively flatten call, else, update result arr with el
-const flattenArray = arr => {
- return Array.isArray(arr) ? arr.flatMap(el => flattenArray(el)) : [el]
-}
+const flattenArray = (arr) => {
+  return Array.isArray(arr) ? arr.flatMap((el) => flattenArray(el)) : [el];
+};
 // OR
-const flattedArrray = arr => {
- const result = []
- if(!arr.length) return []
- arr.forEach(item => {
-  if(Array.isArray(item)){
-   result.push(...flattedArrray(item))
-  } else {
-   result.push(item)
-  }
- })
- return result
-}
+const flattedArrray = (arr) => {
+  const result = [];
+  if (!arr.length) return [];
+  arr.forEach((item) => {
+    if (Array.isArray(item)) {
+      result.push(...flattedArrray(item));
+    } else {
+      result.push(item);
+    }
+  });
+  return result;
+};
 
 // Find the First Non-Repeating Character in a String
 // input: 'swiss'
 // output: 'w' or null if non exists
 // plan: create an obj to keep track of chars count. loop through the str and count occurrences of each char. Find the 1st char with only 1 occurrence
-const findNonRepeatingChar = str => {
- if(!str.length) return
- const charCount = {}
+const findNonRepeatingChar = (str) => {
+  if (!str.length) return;
+  const charCount = {};
 
- for(const char of str){
-  charCount[char] = (charCount[char] || 0) + 1
- }
-
- for(const char of str){
-  if(charCount[char] === 1){
-   return char
+  for (const char of str) {
+    charCount[char] = (charCount[char] || 0) + 1;
   }
- }
-}
+
+  for (const char of str) {
+    if (charCount[char] === 1) {
+      return char;
+    }
+  }
+};
 
 // Find the Length of The Longest Substring Without Repeating Characters
 // input: 'abcabcbb'
 // output: 3
 // plan: use two pointers (left and right) to represent the current window of the substring. use a Set or Map to track unique characters in the window.
 const longestSubstringWithoutRepeats = (str) => {
- let left = 0; // Left pointer of the window
- let maxLen = 0; // Maximum length of substring without repeats
- const charSet = new Set(); // Set to track unique characters
+  let left = 0; // Left pointer of the window
+  let maxLen = 0; // Maximum length of substring without repeats
+  const charSet = new Set(); // Set to track unique characters
 
- for (let right = 0; right < str.length; right++) {
-   // If the character is already in the set, move the left pointer
-   while (charSet.has(str[right])) {
-     charSet.delete(str[left]);
-     left++;
-   }
-   // Add the current character to the set
-   charSet.add(str[right]);
-   // Update the maximum length
-   maxLen = Math.max(maxLen, right - left + 1);
- }
- return maxLen;
+  for (let right = 0; right < str.length; right++) {
+    // If the character is already in the set, move the left pointer
+    while (charSet.has(str[right])) {
+      charSet.delete(str[left]);
+      left++;
+    }
+    // Add the current character to the set
+    charSet.add(str[right]);
+    // Update the maximum length
+    maxLen = Math.max(maxLen, right - left + 1);
+  }
+  return maxLen;
 };
 
 const debounce = (fn, delay) => {
- let timer;
- return(...args) => {
-  // clear the previous timeout to prevent multiple executions
-  clearTimeout(timer)
-   // set a new timeout to execute the function after the delay
-  timer = setTimeout(() => {
-   fn.apply(this, args) // preserve the context and pass arguments
-  }, delay)
- }
-}
-const searchInput = document.getElementById('search')
-const debouncedSearch = debounce(query => {
- console.log(`Searching for: ${query}`)
-}, 300)
-searchInput.addEventListener('input', (e) => debouncedSearch(e.target.value));
+  let timer;
+  return (...args) => {
+    // clear the previous timeout to prevent multiple executions
+    clearTimeout(timer);
+    // set a new timeout to execute the function after the delay
+    timer = setTimeout(() => {
+      fn.apply(this, args); // preserve the context and pass arguments
+    }, delay);
+  };
+};
+const searchInput = document.getElementById("search");
+const debouncedSearch = debounce((query) => {
+  console.log(`Searching for: ${query}`);
+}, 300);
+searchInput.addEventListener("input", (e) => debouncedSearch(e.target.value));
