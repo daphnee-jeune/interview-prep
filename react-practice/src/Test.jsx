@@ -14,6 +14,7 @@ function App() {
   const abortControllerRef = useRef(null); // Ref to store the AbortController instance
 
   // Debounced search function
+  // When a fn is recreated on every render, it can cause child components or hooks that depend on that function to also re-render unnecessarily. useCallback here ensures that the same function instance is reused across renders unless its dependencies change.
   const debouncedSearch = useCallback(
     debounce((value) => {
       const filtered = products.filter((product) =>
