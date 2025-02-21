@@ -9,7 +9,7 @@ function App() {
   const [filteredProducts, setFilteredProducts] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState(null);
-  const [isNotFound, setIsNotFound] = useState(false);
+  const [isNotProductFound, setIsNotProductFound] = useState(false);
   const [cache, setCache] = useState({});
   const abortControllerRef = useRef(null); // Ref to store the AbortController instance
 
@@ -20,7 +20,7 @@ function App() {
       const filtered = products.filter((product) =>
         product.toLowerCase().includes(value.toLowerCase())
       );
-      !filtered.length ? setIsNotFound(true) : setIsNotFound(false);
+      !filtered.length ? setIsNotProductFound(true) : setIsNotProductFound(false);
       setFilteredProducts(filtered);
     }, 300),
     [products]
@@ -90,7 +90,7 @@ function App() {
         onChange={handleChange}
       />
       <>
-        {isNotFound ? (
+        {isNotProductFound ? (
           <p>Not found</p>
         ) : (
           filteredProducts.map((product) => <li key={product}>{product}</li>)
