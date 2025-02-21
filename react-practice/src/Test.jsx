@@ -1,4 +1,4 @@
-import { useState, useEffect, useCallback } from "react";
+import { useState, useEffect, useCallback, useRef } from "react";
 import "./App.css";
 
 const api_url = "https://dummyjson.com/products";
@@ -11,6 +11,7 @@ function App() {
   const [error, setError] = useState(null);
   const [isNotFound, setIsNotFound] = useState(false);
   const [cache, setCache] = useState({});
+  const abortControllerRef = useRef(null); // Ref to store the AbortController instance
 
   // Debounced search function
   const debouncedSearch = useCallback(
@@ -27,11 +28,13 @@ function App() {
   const handleChange = (e) => {
     const value = e.target.value;
     setUserInput(value);
-    // if user input is already in cache, use the cached result
+
+    // If user input is already in cache, use the cached result
     if (cache.hasOwnProperty(value)) {
       setProducts(cache[value]);
     }
-    // update the cache with the new search term and its results
+
+    // Update the cache with the new search term and its results
     setCache((prevCache) => ({ ...prevCache, [value]: filteredProducts }));
     console.log(cache);
     debouncedSearch(value);
@@ -39,20 +42,39 @@ function App() {
 
   useEffect(() => {
     const fetchProducts = async () => {
+      // Abort the previous request if it exists
+      if (abortControllerRef.current) {
+        abortControllerRef.current.abort();
+      }
+
+      // Create a new AbortController for the current request
+      abortControllerRef.current = new AbortController();
+      const { signal } = abortControllerRef.current;
+
       try {
         setIsLoading(true);
-        const response = await fetch(api_url);
+        const response = await fetch(api_url, { signal });
         const data = await response.json();
         const titles = data.products.map((product) => product.title);
         setProducts(titles);
         setFilteredProducts(titles);
       } catch (err) {
-        setError(err);
+        if (err.name !== "AbortError") {
+          setError(err);
+        }
       } finally {
         setIsLoading(false);
       }
     };
+
     fetchProducts();
+
+    // Cleanup function to abort the request when the component unmounts
+    return () => {
+      if (abortControllerRef.current) {
+        abortControllerRef.current.abort();
+      }
+    };
   }, []);
 
   if (isLoading) return <h1>Loading...</h1>;
