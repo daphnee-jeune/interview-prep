@@ -1187,7 +1187,7 @@ const returnKeys = data => {
   return result
 }
 
-// Given a nested object, write a function that counts the number of "leaf" values (values that are not objects
+// Given a nested object, write a function that counts the number of "leaf" values (values that are not objects)
 const numberOfLeaves = nestedObj => {
   const num = 0
 
