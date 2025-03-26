@@ -86,7 +86,7 @@ class UndoRedoManager {
     return [...this.history];
   }
 
-  // get current state of the redo stack
+  
   getRedoStack() {
     return [...this.redoStack];
   }
