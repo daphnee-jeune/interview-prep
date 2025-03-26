@@ -14,6 +14,7 @@ class FigmaLayer {
     }
   }
 }
+
 class FigmaDoc {
   constructor() {
     this.layers = [];
