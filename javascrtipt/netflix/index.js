@@ -1215,13 +1215,12 @@ const nestedObject3 = {
   },
   f: 42,
 };
-// Output
-// {
-//   b: "hello",
-//   c: {
-//     e: "world",
-//   },
-// }
+const output = {
+  b: "hello",
+  c: {
+    e: "world",
+  },
+}
 const returnMatch = (nestedObj, type) => {
   const matchedType =  {}
 
