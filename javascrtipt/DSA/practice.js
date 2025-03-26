@@ -122,62 +122,73 @@ class LRUCache {
   }
 }
 class LRUCacheWithMap {
-  constructor(capacity){
-    this.capacity = capacity
-    this.cache = new Map()
+  constructor(capacity) {
+    this.capacity = capacity;
+    this.cache = new Map();
   }
-  get(key){
-    if(!this.cache.has(key)) return -1
+  get(key) {
+    if (!this.cache.has(key)) return -1;
 
-    const value = this.cache.get(key)
-    this.cache.delete(key)
-    this.cache.set(key, value)
+    const value = this.cache.get(key);
+    this.cache.delete(key);
+    this.cache.set(key, value);
 
-    return value
+    return value;
   }
-  put(key, value){
-    if(this.cache.has(key)){
-      this.cache.delete(key)
-    } else if(this.cache.size >= this.capacity){
-      const lruKey = this.cache.keys().next().value
-      this.cache.delete(lruKey)
+  put(key, value) {
+    if (this.cache.has(key)) {
+      this.cache.delete(key);
+    } else if (this.cache.size >= this.capacity) {
+      const lruKey = this.cache.keys().next().value;
+      this.cache.delete(lruKey);
     }
-    this.cache.set(key, value)
+    this.cache.set(key, value);
   }
 }
 class LRUwithTTL {
-  constructor(capacity, ttl){
+  constructor(capacity, ttl) {
     this.capacity = capacity;
-    this. ttl = ttl;
-    this.cache = new Map()
+    this.ttl = ttl;
+    this.cache = new Map();
   }
-  _isExpired(key){
-    const entry = this.cache.get(key)
-    if(!entry) return true
-    return Date.now() > entry.expiry
+  _isExpired(key) {
+    const entry = this.cache.get(key);
+    if (!entry) return true;
+    return Date.now() > entry.expiry;
   }
 
-  get(key){
-    if(!this.cache.has(key) || this._isExpired(key)) {
-      this.cache.delete(key)
-      return null
+  get(key) {
+    if (!this.cache.has(key) || this._isExpired(key)) {
+      this.cache.delete(key);
+      return null;
     }
-    const { value } = this.cache.get(key)
-    this.cache.delete(key)
-    this.cache.set(key, { value, expiry: Date.now() + this.ttl })
-    return value
+    const { value } = this.cache.get(key);
+    this.cache.delete(key);
+    this.cache.set(key, { value, expiry: Date.now() + this.ttl });
+    return value;
   }
-  set(key, value){
-    if(this.cache.has(key)){
-      this.cache.delete(key)
+  set(key, value) {
+    if (this.cache.has(key)) {
+      this.cache.delete(key);
     }
-    if(this.cache.size >= this.capacity){
-      const oldestKey = this.cache.keys().next().value
-      this.cache.delete(oldestKey)
+    if (this.cache.size >= this.capacity) {
+      const oldestKey = this.cache.keys().next().value;
+      this.cache.delete(oldestKey);
     }
-    this.cache.set(key, { value, expiry: Date.now() + this.ttl })
+    this.cache.set(key, { value, expiry: Date.now() + this.ttl });
   }
 }
+
+// Given org chart of employees dict, return some info about number of reports, etc.
+const ORG_CHART = {
+  John: {
+    Weston: undefined,
+    Jones: {
+      Paul: undefined,
+    },
+  },
+  Lou: undefined,
+};
 class thing {
   constructor() {
     this.properties = {};
@@ -495,3 +506,29 @@ const anagrams = (strs) => {
     }
   }
 };
+
+class test {
+  constructor(capacity, ttl){
+    this.capacity = capacity;
+    this.cache = new Map()
+    this.ttl = ttl
+  }
+  get(key){
+    if(!(this.cache.has(key))) return -1
+
+    const value = this.cache.get(key)
+    this.cache.delete(key)
+    this.cache.set(key, value)
+
+    return value
+  }
+  put(key, value){
+    if(this.cache.has(key)){
+      this.cache.delete(key)
+    } else if (this.cache.size >= this.capacity){
+      const lruKey = this.cache.keys().next().value
+      this.cache.delete(lruKey)
+    }
+    this.cache.set(key, value)
+  }
+}

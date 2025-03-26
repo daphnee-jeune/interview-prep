@@ -458,6 +458,30 @@ const rateLimiter = (fn, limit, time) => {
   }
 }
 
+const rateLimiterWithMap = (fn, limit, time) => {
+  const callsMap = new Map();
+
+  const processQueue = key => {
+    const queue = callsMap.get(key)?.queue || []
+    if(queue.length > 0 && callsMap.get(key).calls < limit){
+      callsMap.get(key).calls++
+      const next = queue.shift()
+      next()
+      setTimeout(() => {
+        callsMap.get(key).calls--
+        processQueue(key)
+      }, time)
+    }
+  }
+  return (key, ...args) => {
+    if(!callsMap.has(key)){
+      callsMap.set(key, { calls: 0, queue: [] })
+    }
+    callsMap.get(key).queue.push(() => fn.apply(null, args))
+    processQueue(key)
+  }
+}
+
 // Given a deeply nested object representing UI module configurations, write a function to transform it into a flat structure for easier processing.
 const flattenConfig = (config) => {
   let parentKey = ''
