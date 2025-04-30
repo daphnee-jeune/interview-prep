@@ -283,3 +283,85 @@ const findLengthOfLIS = nums => {
   }
   return maxLength
 }
+
+// Create a class with an undo and redo feature
+So this class needs to have two arrays: one to hold the stack to undo (history) and one to pop out the redo tasks (redoStacks)
+class UndoRedoManager {
+ constructor(){
+  this.history = [];
+  this.redoStack = [];
+ }
+ addAction(action){
+  this.history.push(action)
+  this.redoStack = []
+ }
+ undo(){
+  if(!this.history.length){
+    throw new Error('No action to undo')
+  }
+  const action = this.redoStack.pop()
+  this.history.push(action)
+  return action
+ }
+ redo(){
+  if(!this.redoStack.length){
+    throw new Error('No action to redo')
+  }
+  const action = this.redoStack.pop()
+  this.redoStack.push(action)
+  return action
+ }
+ getHistory(){
+  return [...this.history]
+ }
+ getRedo(){
+  return [...this.redoStack]
+ }
+}
+
+// Extract the keys in this data structure and return them in an array
+const ORG_CHART = {
+  John: {
+    Weston: undefined,
+    Jones: {
+      Paul: undefined,
+    },
+  },
+  Lou: undefined,
+};
+const extractKeyNames = data => {
+  const names = []
+  names.push(...Object.keys(data))
+  for(const key in data){
+    if(data[key] === 'object' && data[key] !== null){
+      names.push(...extractKeyNames(data[key]))
+    }
+  }
+  return names
+}
+
+class LRUCache {
+  constructor(capacity, ttl){
+    this.capacity = capacity;
+    this.ttl = ttl;
+    this.cache = new Map();
+  }
+  get(key){
+    if(!this.cache.has(key)){
+      return -1
+    }
+    const value = this.cache.get(key)
+    this.cache.delete(key)
+    this.cache.set(key, value)
+    return value
+  }
+  put(key, value){
+    if(this.cache.has(key)){
+      this.cache.delete(key)
+    } else if(this.cache.size >= this.capacity){
+      const lruKey = this.cache.keys().next().value;
+      this.cache.delete(lruKey)
+    }
+    this.cache.set(key, value)
+  }
+}

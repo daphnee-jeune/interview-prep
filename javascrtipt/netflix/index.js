@@ -806,6 +806,9 @@ function expect(x) {
   return {
     toBe: (y) => {
      return x === y
+    },
+    greaterThan: (y) => {
+      return x > y
     }
   }
 }
