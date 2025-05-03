@@ -169,14 +169,12 @@ Then loop through the object and for each key
 check if the key is an object and recursively call the function on that key
 const extractKeys = obj => {
   const keys = []
-  
   for(const key in obj){
     keys.push(key)
     if(obj[key] === 'object' && obj[key] !== null){
       keys = keys.concat(extractKeys(obj[key]))
     }
   }
-  
   return keys
 }
 
@@ -262,7 +260,6 @@ const getAuthors = data => {
       authors.push(...getAuthors(el))
     })
   }
-
   return authors
 }
 
