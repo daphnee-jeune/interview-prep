@@ -186,6 +186,50 @@ const restructureObj = (data) => {
   if (!Array.isArray(data) || data === null) return;
   return data.reduce((acc, curr) => {
     acc[curr].city = acc[curr].forecast;
-    return acc
+    return acc;
   }, {});
 };
+
+const list = [
+  { name: "Apple", category: "Fruit" },
+  { name: "Cucumber", category: "Vegetable" },
+  { name: "Banana", category: "Fruit" },
+];
+// Return an an object with the cateogry as key and an array of fruits as the value
+const changeDataStructure = (data) => {
+  if (!Array.isArray(data) || data === null) return;
+  return data.reduce((acc, curr) => {
+    const { name, category } = curr;
+    if (!acc[category]) {
+      acc[category] = [];
+    }
+    acc[category].push(name);
+    return acc;
+  });
+};
+
+const fruits = ["apple", "banana", "apple", "orange", "banana", "apple"];
+// Return an object with the occurences of each fruit
+const fruitCount = (fruits) => {
+  return fruits.reduce((acc, curr) => {
+    acc[curr] = (acc[curr] || 0) + 1;
+    return acc;
+  }, {});
+};
+
+// "racecar"
+const checkPalindrome = (str) => {
+  return str === str.split("").reverse().join("");
+};
+
+const countVowels = (str) => {
+  const vowels = "aeiou";
+  return str
+    .toLowerCase()
+    .split("")
+    .filter((letter) => vowels.includes(letter)).length;
+};
+
+const removeDupes = str => {
+  return [...new Set(str)].join('')
+}
