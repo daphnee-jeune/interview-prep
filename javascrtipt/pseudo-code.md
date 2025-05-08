@@ -65,7 +65,7 @@ const groupAnagrams = list => {
     }
     groups[sorted].push(word)
   }
-  return Object.values(group)
+  return Object.values(groups)
 }
 
 // First duplicate character
@@ -100,7 +100,7 @@ const deepClone = (obj) => {
   if(typeof obj !== 'object' || obj === null){
     return obj
   }
-  let clone = Array.isArray(value) ? [] : {}
+  let clone = Array.isArray(obj) ? [] : {}
   for(const key in obj){
     const value = obj[key]
     if(typeof value === 'object' && value !== null){
