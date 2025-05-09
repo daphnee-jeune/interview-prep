@@ -52,6 +52,23 @@ const lengthOfLongestSubstr = (str) => {
   return maxLength;
 };
 
+// OR
+const lengthOfLongestSubstrWithSet = (str) => {
+ if(!str.length) return
+ let window = new Set()
+ let maxLength = 0
+ let start = 0
+ for(let end = 0; end < str.length; end++){
+  while(window.has(str[end])){
+    window.delete(str[start])
+    start++
+  }
+  set.add(str[end])
+  maxLength = Math.max(maxLength, (end - start) + 1)
+ }
+ return maxLength
+};
+
 const groupAnagrams = (words) => {
   const groups = {};
   for (const word in words) {
@@ -144,7 +161,7 @@ function promiseAll(promises) {
 const mockWeatherData = {
   "New York": { temperature: "22°C", humidity: "56%", windSpeed: "15 km/h" },
   "Los Angeles": { temperature: "27°C", humidity: "45%", windSpeed: "10 km/h" },
-  "London": { temperature: "15°C", humidity: "70%", windSpeed: "20 km/h" },
+  London: { temperature: "15°C", humidity: "70%", windSpeed: "20 km/h" },
 };
 const grabTemperatures = (data) => {
   if (typeof data !== "object" || data === null) return;
@@ -232,4 +249,30 @@ const countVowels = (str) => {
 
 const removeDupes = (str) => {
   return [...new Set(str)].join("");
+};
+
+const longestSubstr = (str) => {
+  let seen = new Set(); // keep track of unique chars in curren window
+  let start = 0; // start of the sliding window
+  // these two keep track of the best results so far
+  let maxLength = 0;
+  let longestSubstr = "";
+
+  // loop through each char in the string
+  for (let i = 0; i < str.length; i++) {
+    // if we encounter a dupe char, shrink the window from the left until it's gone
+    while (seen.has[str[i]]) {
+      seen.delete(str[start]); /// remove left char
+      start++; // move start point to bext char
+    }
+    seen.add[str[i]]; // add new char to the set
+
+    // check if length of window is longer than what we've seen so far
+    let windowLength = i - start + 1;
+    if (windowLength) {
+      maxLength = windowLength;
+      longestSubstr = str.slice(start, i + 1); // grab current substr
+    }
+  }
+  return longestSubstr;
 };
