@@ -15,10 +15,7 @@ const deepClone = (obj) => {
   }
   let clone = Array.isArray(obj) ? [] : {};
   for (const key in obj) {
-    clone[key] = obj[key];
-    if (typeof obj[key] === "object" && obj[key] !== null) {
-      clone[key] = deepClone(obj[key]);
-    }
+    clone[key] = deepClone(obj[key]);
   }
   return clone;
 };
@@ -161,7 +158,7 @@ function promiseAll(promises) {
 const mockWeatherData = {
   "New York": { temperature: "22°C", humidity: "56%", windSpeed: "15 km/h" },
   "Los Angeles": { temperature: "27°C", humidity: "45%", windSpeed: "10 km/h" },
-  London: { temperature: "15°C", humidity: "70%", windSpeed: "20 km/h" },
+  "London": { temperature: "15°C", humidity: "70%", windSpeed: "20 km/h" },
 };
 const grabTemperatures = (data) => {
   if (typeof data !== "object" || data === null) return;
