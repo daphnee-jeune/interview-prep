@@ -1,0 +1,18 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+ <meta charset="UTF-8">
+ <meta name="viewport" content="width=device-width, initial-scale=1.0">
+ <title>Toast Message Notification</title>
+</head>
+<body>
+ <button onclick="showToast('Hello from success toast!', 'info')">Show Toast</button>
+<toast-message></toast-message>
+<script src="./toast-message.js" type="module"></script>
+<script>
+ function showToast(msg, type = 'info'){
+  document.querySelector('toast-message').show(msg, type)
+ }
+</script>
+</body>
+</html>
