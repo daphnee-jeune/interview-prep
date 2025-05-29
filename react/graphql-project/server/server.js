@@ -7,6 +7,9 @@ const typeDefs = `
   getUsers: [User] // returns list (array) of all users
   getUserById(id: ID!): User
  }
+ type Mutation {
+  createUser(name: String!, age: Int!, isMarried: Boolean!): User
+ }
  type User {
   id: ID
   name: String
