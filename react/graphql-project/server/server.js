@@ -11,7 +11,7 @@ const users = [
 // definition for queries and mutation types
 const typeDefs = `
  type Query {
-  getUsers: [User] // returns list (array) of all users
+  getUsers: [User]
   getUserById(id: ID!): User
  }
  type Mutation {
@@ -41,9 +41,10 @@ const resolvers = {
         id: (users.length + 1).toString(), // keep string to stay in sync with mock data
         name,
         age,
-        isMarried
+        isMarried,
       };
-      users.push(newUser)
+      console.log(newUser);
+      users.push(newUser);
     },
   },
 };
