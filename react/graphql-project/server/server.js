@@ -1,6 +1,13 @@
 import { ApolloServer } from "@apollo/server";
 import { startStandaloneServer } from "@apollo/server/standalone";
 
+// mock data
+const users = [
+ {id: "1", name: "Daphnée Jeune", age: 29, isMarried: false},
+ {id: "2", name: "Ari Hart", age: 28, isMarried: false},
+ {id: "3", name: "Yana Mixy", age: 30, isMarried: true}
+]
+
 // definition for queries and mutation types
 const typeDefs = `
  type Query {
@@ -17,7 +24,18 @@ const typeDefs = `
   isMarried: Boolean
  }
 `;
-const resolvers = {};
+const resolvers = {
+ Query: {
+  getUsers: () => {
+   return users // get all users from db or trigger call to db collection
+  },
+  getUserById: (parent, args) => {
+   const id = args.id
+   return users.find(user => user.id === id)
+  }
+ },
+ Mutation: {}
+};
 
 const server = new ApolloServer({ typeDefs, resolvers });
 
