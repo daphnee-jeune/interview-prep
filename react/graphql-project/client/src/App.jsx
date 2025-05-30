@@ -1,46 +1,31 @@
 import "./App.css";
 import { useState } from "react";
-import { useQuery, useMutation } from "@apollo/client";
-import { GET_USERS, GET_USER_BY_ID, CREATE_USER, DELETE_USER } from './queries.graphql'
+import { useUsers } from "./useUsers";
 
 function App() {
   const [newUser, setNewUser] = useState({});
   const {
-    data: usersData,
-    loading: isUsersDataLoading,
-    error: usersDataError,
-  } = useQuery(GET_USERS);
-  const {
-    data: userById,
-    loading: isUserByIdLoading,
-    error: userByIdError,
-  } = useQuery(GET_USER_BY_ID, {
-    variables: { id: Math.floor(Math.random() * 3) },
-  });
-  const [ createUser ] = useMutation(CREATE_USER);
-  const [ deleteUser ] = useMutation(DELETE_USER);
+    usersData,
+    userById,
+    isUsersDataLoading,
+    isUserByIdLoading,
+    usersDataError,
+    userByIdError,
+    createUser,
+    deleteUser,
+  } = useUsers();
 
   if (isUsersDataLoading || isUserByIdLoading) return <p>Loading...</p>;
   if (usersDataError || userByIdError)
     return <p>Opps an error occured: {usersDataError.message}</p>;
 
   const handleCreateUser = async () => {
-    createUser({
-      variables: {
-        name: newUser.name,
-        age: Number(newUser.age),
-        isMarried: false,
-      },
-    });
+    await createUser({ ...newUser, isMarried: false });
   };
+
   const handleDeleteUser = async (id) => {
-    console.log("HERE")
-    await deleteUser({
-      variables: {
-        id
-      }
-    })
-  }
+    await deleteUser(id);
+  };
   return (
     <>
       <div>
