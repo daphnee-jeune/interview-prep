@@ -16,6 +16,7 @@ const typeDefs = `
  }
  type Mutation {
   createUser(name: String!, age: Int!, isMarried: Boolean!): User
+  deleteUser(id: ID!): User
  }
  type User {
   id: ID
@@ -43,8 +44,16 @@ const resolvers = {
         age,
         isMarried,
       };
-      console.log(newUser);
       users.push(newUser);
+      return newUser;
+    },
+    deleteUser: (parent, args) => {
+      const id = args.id.toString();
+      const index = users.findIndex((user) => user.id === id);
+      if (index === -1) return null;
+      const deletedUser = users[index];
+      users.splice(index, 1);
+      return deletedUser;
     },
   },
 };

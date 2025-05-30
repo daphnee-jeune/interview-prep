@@ -1,7 +1,7 @@
 import "./App.css";
 import { useState } from "react";
 import { useQuery, useMutation } from "@apollo/client";
-import { GET_USERS, GET_USER_BY_ID, CREATE_USER } from './queries.graphql'
+import { GET_USERS, GET_USER_BY_ID, CREATE_USER, DELETE_USER } from './queries.graphql'
 
 function App() {
   const [newUser, setNewUser] = useState({});
@@ -15,16 +15,16 @@ function App() {
     loading: isUserByIdLoading,
     error: userByIdError,
   } = useQuery(GET_USER_BY_ID, {
-    variables: { id: "1" },
+    variables: { id: Math.floor(Math.random() * 3) },
   });
   const [ createUser ] = useMutation(CREATE_USER);
+  const [ deleteUser ] = useMutation(DELETE_USER);
 
   if (isUsersDataLoading || isUserByIdLoading) return <p>Loading...</p>;
   if (usersDataError || userByIdError)
     return <p>Opps an error occured: {usersDataError.message}</p>;
 
   const handleCreateUser = async () => {
-    console.log(newUser);
     createUser({
       variables: {
         name: newUser.name,
@@ -33,6 +33,14 @@ function App() {
       },
     });
   };
+  const handleDeleteUser = async (id) => {
+    console.log("HERE")
+    await deleteUser({
+      variables: {
+        id
+      }
+    })
+  }
   return (
     <>
       <div>
@@ -64,6 +72,7 @@ function App() {
             <p>Name: {user.name}</p>
             <p>Age: {user.age}</p>
             <p>Marital status: {user.isMarried ? "Married" : "Single"}</p>
+            <button onClick={() => handleDeleteUser(user.id)}>Delete</button>
           </div>
         ))}
       </div>
