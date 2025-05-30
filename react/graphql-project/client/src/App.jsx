@@ -1,36 +1,7 @@
 import "./App.css";
 import { useState } from "react";
-import { useQuery, useMutation, gql } from "@apollo/client";
-
-const GET_USERS = gql`
-  query GetUsers {
-    getUsers {
-      id
-      age
-      name
-      isMarried
-    }
-  }
-`;
-
-const GET_USER_BY_ID = gql`
-  query GetUserById($id: ID!) {
-    getUserById(id: $id) {
-      id
-      age
-      name
-      isMarried
-    }
-  }
-`;
-
-const CREATE_USER = gql`
-  mutation CreateUser($name: String!, $age: Int!, $isMarried: Boolean!) {
-    createUser(name: $name, age: $age, isMarried: $isMarried) {
-      name
-    }
-  }
-`;
+import { useQuery, useMutation } from "@apollo/client";
+import { GET_USERS, GET_USER_BY_ID, CREATE_USER } from './queries.graphql'
 
 function App() {
   const [newUser, setNewUser] = useState({});
