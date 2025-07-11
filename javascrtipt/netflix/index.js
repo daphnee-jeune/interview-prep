@@ -628,11 +628,14 @@ const personObj2 = entries.reduce((obj, [key, value]) => { // [key, value]: dest
 }, {})
 
 // Grouping an Array into an Object
-const products = [
-  { id: 1, category: "Fruit", name: "Apple" },
-  { id: 2, category: "Vegetable", name: "Carrot" },
-  { id: 3, category: "Fruit", name: "Banana" },
-];
+const foodData = [
+  { category: "Fruits", price: "$1", stocked: true, name: "Apple" },
+  { category: "Fruits", price: "$1", stocked: true, name: "Dragonfruit" },
+  { category: "Fruits", price: "$2", stocked: false, name: "Passionfruit" },
+  { category: "Vegetables", price: "$2", stocked: true, name: "Spinach" },
+  { category: "Vegetables", price: "$4", stocked: false, name: "Pumpkin" },
+  { category: "Vegetables", price: "$1", stocked: true, name: "Peas" }
+]
 
 const groupedData = products.reduce((acc, product) => {
   const { category } = product
@@ -642,12 +645,15 @@ const groupedData = products.reduce((acc, product) => {
 }, {})
 
 // {
-//   Fruit: [
-//     { id: 1, category: "Fruit", name: "Apple" },
-//     { id: 3, category: "Fruit", name: "Banana" }
+//   Fruits: [
+//     { category: 'Fruits', price: '$1', stocked: true, name: 'Apple' },
+//     { category: 'Fruits', price: '$1', stocked: true, name: 'Dragonfruit' },
+//     { category: 'Fruits', price: '$2', stocked: false, name: 'Passionfruit' }
 //   ],
-//   Vegetable: [
-//     { id: 2, category: "Vegetable", name: "Carrot" }
+//   Vegetables: [
+//     { category: 'Vegetables', price: '$2', stocked: true, name: 'Spinach' },
+//     { category: 'Vegetables', price: '$4', stocked: false, name: 'Pumpkin' },
+//     { category: 'Vegetables', price: '$1', stocked: true, name: 'Peas' }
 //   ]
 // }
 

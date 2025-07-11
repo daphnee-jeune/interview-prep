@@ -219,19 +219,19 @@ class Cache {
     const expiration = Date.now() + ttl;
     this.cache.set(key, { value, expiration });
   }
-  get(key){
-    const entry = this.cache.get(key)
-    if(entry && (entry.expiration > Date.now())){
-      return entry.value
+  get(key) {
+    const entry = this.cache.get(key);
+    if (entry && entry.expiration > Date.now()) {
+      return entry.value;
     }
-    this.cache.delete(key)
-    return null
+    this.cache.delete(key);
+    return null;
   }
-  clearExpired(){
-    const now = Date.now()
-    for(const [key, entry] of this.cache){
-      if(entry.expiration <= now){
-        this.cache.delete(key)
+  clearExpired() {
+    const now = Date.now();
+    for (const [key, entry] of this.cache) {
+      if (entry.expiration <= now) {
+        this.cache.delete(key);
       }
     }
   }
