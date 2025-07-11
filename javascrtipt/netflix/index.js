@@ -371,7 +371,7 @@ const deepCopy = value => {
 
   for(const key in value){
     const val = value[key]
-    clone[key] = deepclone(val)
+    clone[key] = deepCopy(val)
   }
   return clone
 }
