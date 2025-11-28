@@ -51,19 +51,19 @@ const lengthOfLongestSubstr = (str) => {
 
 // OR
 const lengthOfLongestSubstrWithSet = (str) => {
- if(!str.length) return
- let window = new Set()
- let maxLength = 0
- let start = 0
- for(let end = 0; end < str.length; end++){
-  while(window.has(str[end])){
-    window.delete(str[start])
-    start++
+  if (!str.length) return;
+  let window = new Set();
+  let maxLength = 0;
+  let start = 0;
+  for (let end = 0; end < str.length; end++) {
+    while (window.has(str[end])) {
+      window.delete(str[start]);
+      start++;
+    }
+    set.add(str[end]);
+    maxLength = Math.max(maxLength, end - start + 1);
   }
-  set.add(str[end])
-  maxLength = Math.max(maxLength, (end - start) + 1)
- }
- return maxLength
+  return maxLength;
 };
 
 const groupAnagrams = (words) => {
