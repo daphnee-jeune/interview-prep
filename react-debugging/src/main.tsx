@@ -1,10 +1,10 @@
 import { StrictMode } from 'react'
 import { createRoot } from 'react-dom/client'
 import './index.css'
-import Score from './exercises/async-callback-stale-state'
+import InfiniteRerender from './exercises/infinite-rerender'
 
 createRoot(document.getElementById('root')!).render(
   <StrictMode>
-    <Score />
+    {/* <InfiniteRerender /> */}
   </StrictMode>,
 )
