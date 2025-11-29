@@ -8,7 +8,7 @@ for (var i = 0; i <= 3; i++){
  document.body.appendChild(btn)
 }
 // Diagnose the bug
-// This snippet renders 4 buttons on the UI. When clicking on any one of the buttons, the alert reads 'You clicked button 4' and not the button clicked.
+// This snippet renders 4 buttons on the UI. When clicking on any one of the buttons, the alert reads 'You clicked button 4' and not the button clicked
 // Reproduce it in the browser => add a log statement to read i in the event handler and notice that i always comes back as 4 and not the number of the button clicked
 // This happens because var is function scoped. So by the time the click happens, the loop has already finished
 // Use let instead to create lexical binding, or create an IIFE
