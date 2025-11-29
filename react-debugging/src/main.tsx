@@ -1,10 +1,10 @@
 import { StrictMode } from 'react'
 import { createRoot } from 'react-dom/client'
 import './index.css'
-import UserProfile from './exercises/race-condition'
+import Score from './exercises/async-callback-stale-state'
 
 createRoot(document.getElementById('root')!).render(
   <StrictMode>
-    <UserProfile userId='1' />
+    <Score />
   </StrictMode>,
 )
